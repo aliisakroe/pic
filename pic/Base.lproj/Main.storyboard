@@ -1,25 +1,324 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6211" systemVersion="14A298i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9060" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="USs-NR-tp8">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6204"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
-        <scene sceneID="tne-QT-ifu">
+        <!--DiscardsVC-->
+        <scene sceneID="lqM-tC-12c">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
-                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                <collectionViewController id="rKZ-Fd-9db" customClass="DiscardsVC" customModule="pic" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bouncesZoom="NO" dataMode="prototypes" id="DQd-RB-66K">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <animations/>
+                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="k8f-5S-4xv">
+                            <size key="itemSize" width="50" height="50"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="photoCell" id="vrE-E9-WfY">
+                                <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <animations/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <animations/>
+                            </collectionViewCell>
+                        </cells>
+                        <connections>
+                            <outlet property="dataSource" destination="rKZ-Fd-9db" id="Cl8-GX-bi0"/>
+                            <outlet property="delegate" destination="rKZ-Fd-9db" id="vpa-f2-hso"/>
+                        </connections>
+                    </collectionView>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="SN0-Z4-aRq" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-894" y="-91"/>
+        </scene>
+        <!--Main Compare-->
+        <scene sceneID="cxn-LR-4fs">
+            <objects>
+                <viewController id="USs-NR-tp8" customClass="MainCompare" customModule="pic" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="teQ-bq-mBR"/>
+                        <viewControllerLayoutGuide type="bottom" id="lGA-e2-tJX"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="LBg-2b-FKK">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="ymh-YR-Ari">
+                                <rect key="frame" x="9" y="90" width="0.0" height="0.0"/>
+                                <subviews>
+                                    <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3TP-iF-W7W">
+                                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="128"/>
+                                        <animations/>
+                                        <gestureRecognizers/>
+                                        <connections>
+                                            <outletCollection property="gestureRecognizers" destination="FVt-Zp-jhx" appends="YES" id="yek-ix-iUz"/>
+                                            <outletCollection property="gestureRecognizers" destination="GVh-p0-flc" appends="YES" id="PEt-nX-Csv"/>
+                                            <outletCollection property="gestureRecognizers" destination="QDk-MS-ngI" appends="YES" id="OCG-DD-1FW"/>
+                                        </connections>
+                                    </imageView>
+                                    <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1Ik-q5-eqB">
+                                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="128"/>
+                                        <animations/>
+                                        <gestureRecognizers/>
+                                        <connections>
+                                            <outletCollection property="gestureRecognizers" destination="d6v-nk-8SW" appends="YES" id="SQJ-h1-ezM"/>
+                                            <outletCollection property="gestureRecognizers" destination="j9k-fa-dda" appends="YES" id="UML-64-a2D"/>
+                                            <outletCollection property="gestureRecognizers" destination="GF3-My-XdH" appends="YES" id="VFk-k9-PJZ"/>
+                                        </connections>
+                                    </imageView>
+                                </subviews>
+                                <animations/>
+                                <variation key="heightClass=compact" misplaced="YES">
+                                    <rect key="frame" x="9" y="10" width="560" height="380"/>
+                                </variation>
+                                <variation key="widthClass=compact" misplaced="YES">
+                                    <rect key="frame" x="9" y="447" width="360" height="153"/>
+                                </variation>
+                            </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GsH-iF-04e">
+                                <rect key="frame" x="112" y="433" width="90" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Pic!"/>
+                                <connections>
+                                    <action selector="imagePicker:" destination="USs-NR-tp8" eventType="touchUpInside" id="H5c-hC-cHR"/>
+                                </connections>
+                            </button>
+                            <imageView hidden="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="AUI-eB-noy">
+                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                <animations/>
+                                <gestureRecognizers/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="AUI-eB-noy" secondAttribute="height" multiplier="349:409" id="mHB-PZ-E0g"/>
+                                </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="mHB-PZ-E0g"/>
+                                    </mask>
+                                </variation>
+                                <variation key="widthClass=compact">
+                                    <mask key="constraints">
+                                        <include reference="mHB-PZ-E0g"/>
+                                    </mask>
+                                </variation>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="Ngd-QS-bdi" appends="YES" id="Twn-pf-xx7"/>
+                                    <outletCollection property="gestureRecognizers" destination="OdS-1a-Ukp" appends="YES" id="rB7-Fl-fNR"/>
+                                    <outletCollection property="gestureRecognizers" destination="EZk-mq-T6M" appends="YES" id="4iO-al-73u"/>
+                                </connections>
+                            </imageView>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <gestureRecognizers/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="AUI-eB-noy" secondAttribute="trailing" constant="11" id="CBW-36-1Rk"/>
+                            <constraint firstItem="ymh-YR-Ari" firstAttribute="leading" secondItem="LBg-2b-FKK" secondAttribute="leadingMargin" id="GT2-hC-lSc"/>
+                            <constraint firstItem="ymh-YR-Ari" firstAttribute="leading" secondItem="LBg-2b-FKK" secondAttribute="leadingMargin" id="I2I-Pm-9pL"/>
+                            <constraint firstItem="GsH-iF-04e" firstAttribute="centerX" secondItem="LBg-2b-FKK" secondAttribute="centerX" id="M0w-uD-Wue"/>
+                            <constraint firstItem="lGA-e2-tJX" firstAttribute="top" secondItem="ymh-YR-Ari" secondAttribute="bottom" id="MLm-Hk-GTp"/>
+                            <constraint firstItem="AUI-eB-noy" firstAttribute="top" secondItem="teQ-bq-mBR" secondAttribute="bottom" id="Sj8-be-asI"/>
+                            <constraint firstItem="ymh-YR-Ari" firstAttribute="top" secondItem="AUI-eB-noy" secondAttribute="bottom" constant="18" id="a9S-v2-CZj"/>
+                            <constraint firstItem="AUI-eB-noy" firstAttribute="leading" secondItem="LBg-2b-FKK" secondAttribute="leadingMargin" id="fnP-hy-3B5"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="ymh-YR-Ari" secondAttribute="trailing" id="iSc-NC-8AT"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="ymh-YR-Ari" secondAttribute="trailing" id="r7M-9C-kcE"/>
+                            <constraint firstItem="lGA-e2-tJX" firstAttribute="top" secondItem="ymh-YR-Ari" secondAttribute="bottom" id="rQb-eI-XvG"/>
+                            <constraint firstItem="GsH-iF-04e" firstAttribute="centerY" secondItem="LBg-2b-FKK" secondAttribute="centerY" id="uAs-1H-uKN"/>
+                            <constraint firstItem="ymh-YR-Ari" firstAttribute="top" secondItem="teQ-bq-mBR" secondAttribute="bottom" id="yH7-4A-TSd"/>
+                        </constraints>
+                        <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="GsH-iF-04e"/>
+                                <exclude reference="AUI-eB-noy"/>
+                            </mask>
+                            <mask key="constraints">
+                                <exclude reference="CBW-36-1Rk"/>
+                                <exclude reference="Sj8-be-asI"/>
+                                <exclude reference="fnP-hy-3B5"/>
+                                <exclude reference="GT2-hC-lSc"/>
+                                <exclude reference="I2I-Pm-9pL"/>
+                                <exclude reference="a9S-v2-CZj"/>
+                                <exclude reference="iSc-NC-8AT"/>
+                                <exclude reference="r7M-9C-kcE"/>
+                                <exclude reference="yH7-4A-TSd"/>
+                                <exclude reference="MLm-Hk-GTp"/>
+                                <exclude reference="rQb-eI-XvG"/>
+                                <exclude reference="M0w-uD-Wue"/>
+                                <exclude reference="uAs-1H-uKN"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=compact">
+                            <mask key="constraints">
+                                <include reference="GT2-hC-lSc"/>
+                                <include reference="r7M-9C-kcE"/>
+                                <include reference="yH7-4A-TSd"/>
+                                <include reference="rQb-eI-XvG"/>
+                            </mask>
+                        </variation>
+                        <variation key="widthClass=compact">
+                            <mask key="subviews">
+                                <include reference="GsH-iF-04e"/>
+                                <include reference="AUI-eB-noy"/>
+                            </mask>
+                            <mask key="constraints">
+                                <include reference="CBW-36-1Rk"/>
+                                <include reference="Sj8-be-asI"/>
+                                <include reference="fnP-hy-3B5"/>
+                                <include reference="I2I-Pm-9pL"/>
+                                <include reference="a9S-v2-CZj"/>
+                                <include reference="iSc-NC-8AT"/>
+                                <include reference="MLm-Hk-GTp"/>
+                                <include reference="M0w-uD-Wue"/>
+                                <include reference="uAs-1H-uKN"/>
+                            </mask>
+                        </variation>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="DcD-wP-ahq" appends="YES" id="peH-Ao-rDD"/>
+                        </connections>
+                    </view>
+                    <connections>
+                        <outlet property="imgLL" destination="3TP-iF-W7W" id="Yfi-oI-Pd8"/>
+                        <outlet property="imgLR" destination="1Ik-q5-eqB" id="Vco-nS-rxj"/>
+                        <outlet property="imgMain" destination="AUI-eB-noy" id="2bZ-bD-ZS0"/>
+                        <segue destination="rKZ-Fd-9db" kind="show" identifier="discards" id="lBc-t4-nNP"/>
+                        <segue destination="DUx-w1-Beu" kind="show" identifier="finalShare" id="Csm-I0-Jmt"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="HZQ-kx-eoo" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="d6v-nk-8SW">
+                    <connections>
+                        <action selector="tapLR:" destination="USs-NR-tp8" id="rAK-in-0kk"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer id="FVt-Zp-jhx">
+                    <connections>
+                        <action selector="tapLL:" destination="USs-NR-tp8" id="utr-di-NXk"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <swipeGestureRecognizer direction="right" id="j9k-fa-dda">
+                    <connections>
+                        <action selector="landscapeLRSwipe:" destination="USs-NR-tp8" id="ZBY-WE-xGz"/>
+                    </connections>
+                </swipeGestureRecognizer>
+                <swipeGestureRecognizer direction="right" id="GVh-p0-flc">
+                    <connections>
+                        <action selector="landscapeLLSwipe:" destination="USs-NR-tp8" id="Hwg-3n-7Bj"/>
+                    </connections>
+                </swipeGestureRecognizer>
+                <swipeGestureRecognizer direction="right" id="Ngd-QS-bdi">
+                    <connections>
+                        <action selector="mainSwipeRight:" destination="USs-NR-tp8" id="Oew-Vb-Zpb"/>
+                    </connections>
+                </swipeGestureRecognizer>
+                <swipeGestureRecognizer direction="left" id="OdS-1a-Ukp">
+                    <connections>
+                        <action selector="mainSwipeLeft:" destination="USs-NR-tp8" id="lJe-vR-RNU"/>
+                    </connections>
+                </swipeGestureRecognizer>
+                <swipeGestureRecognizer direction="up" id="EZk-mq-T6M">
+                    <connections>
+                        <action selector="swipeUpMain:" destination="USs-NR-tp8" id="Wh6-1H-egP"/>
+                    </connections>
+                </swipeGestureRecognizer>
+                <screenEdgePanGestureRecognizer minimumNumberOfTouches="1" id="DcD-wP-ahq">
+                    <rectEdge key="edges" left="YES"/>
+                    <connections>
+                        <action selector="swipeToCollectionView:" destination="USs-NR-tp8" id="qDa-DR-mbS"/>
+                    </connections>
+                </screenEdgePanGestureRecognizer>
+                <swipeGestureRecognizer direction="up" id="GF3-My-XdH">
+                    <connections>
+                        <action selector="swipeUpLR:" destination="USs-NR-tp8" id="gfZ-ia-71N"/>
+                    </connections>
+                </swipeGestureRecognizer>
+                <swipeGestureRecognizer direction="up" id="QDk-MS-ngI">
+                    <connections>
+                        <action selector="swipeUpLL:" destination="USs-NR-tp8" id="xCm-Qi-KRz"/>
+                    </connections>
+                </swipeGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="-90" y="-91"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="iYc-Ev-BkG">
+            <objects>
+                <viewController id="DUx-w1-Beu" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="3bg-YS-2MZ"/>
+                        <viewControllerLayoutGuide type="bottom" id="hI1-Sq-MiP"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="ooI-lK-iH0">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="uPq-ap-09o">
+                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                <animations/>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="80" y="117" width="240" height="128"/>
+                                </variation>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="I7z-tm-Flc">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Button"/>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="73" y="446" width="46" height="30"/>
+                                </variation>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="56C-fl-SlW">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Button"/>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="172" y="446" width="46" height="30"/>
+                                </variation>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LhI-9F-kIZ">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Button"/>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="294" y="446" width="46" height="30"/>
+                                </variation>
+                            </button>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="uPq-ap-09o"/>
+                                <exclude reference="I7z-tm-Flc"/>
+                                <exclude reference="56C-fl-SlW"/>
+                                <exclude reference="LhI-9F-kIZ"/>
+                            </mask>
+                        </variation>
+                        <variation key="widthClass=compact">
+                            <mask key="subviews">
+                                <include reference="uPq-ap-09o"/>
+                                <include reference="I7z-tm-Flc"/>
+                                <include reference="56C-fl-SlW"/>
+                                <include reference="LhI-9F-kIZ"/>
+                            </mask>
+                        </variation>
                     </view>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Gwt-eL-eWc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="636" y="-91"/>
         </scene>
     </scenes>
 </document>

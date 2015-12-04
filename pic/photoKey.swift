@@ -8,5 +8,8 @@
 
 import UIKit
 
-struct photoLoaded {
+struct PhotoKey {
+    var index : Int
+    var image : UIImage
 }
+
