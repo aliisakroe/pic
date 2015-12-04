@@ -6,8 +6,7 @@
 //
 //
 
-import Cocoa
+import UIKit
 
-class PhotoThumbnail: UICollectionViewCell {
-
+struct photoLoaded {
 }
