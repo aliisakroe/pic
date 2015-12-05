@@ -118,3 +118,38 @@ effectView.frame = imgLR.frame //layout error
 }
 view.addSubview(view)
 }*/
+
+/*
+self.scrollView.frame = CGRectMake(0, 0, self.view.frame.width, 200)
+let scrollViewHeight = 200
+let scrollViewWidth = self.view.frame.width
+var y  = self.view.frame.maxY - 200
+var width  = self.view.frame.width / 2 - 15
+
+for i in 0 ..< self.photoList.keepers.keys.count {
+var x = (CGFloat)(0 + 200*i)
+let imageViewTemp = UIImageView(frame: CGRectMake(x, y, width, 200))
+imageViewTemp.image = Array(self.photoList.keepers.values)[i].image
+self.scrollView.addSubview(imageViewTemp)
+}
+let length = (CGFloat)(self.scrollView.frame.width) * (CGFloat)(self.photoList.keepers.keys.count / 2)
+self.scrollView.contentSize = CGSizeMake(length, self.scrollView.frame.height)*/
+
+/*
+var instagramURL = NSURL(string: "instagram://app")
+if UIApplication.sharedApplication().canOpenURL(instagramURL!) {
+// Success
+var img = imageView.image
+
+var savePath: String = NSHomeDirectory().stringByAppendingPathComponent("Documents/Test.igo")
+UIImageJPEGRepresentation(img, 1).writeToFile(savePath, atomically: true)
+var imgURL = NSURL(string: NSString(format: "file://%@", savePath) as! String)
+
+docController = UIDocumentInteractionController(URL: imgURL!) // 1
+docController.UTI = "com.instagram.exclusivegram" // 2
+docController.delegate = self
+docController.annotation = ["InstagramCaption":"\(myTextField.text) \(myTextField2text)"] // 3
+docController.presentOpenInMenuFromRect(self.view.frame, inView: self.view, animated: true) // 4
+} else {
+// Error
+} */

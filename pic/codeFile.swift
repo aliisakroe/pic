@@ -46,21 +46,20 @@ class PhotoList {
         }
         return sortedIndices
     }
+
+
+    func getTotalImages(list: String) -> [Int : UIImage] {
+        var imageDict = [Int: UIImage]()
+        if list == "discards" {
+            for i in 0 ..< self.discards.count {
+                let photo = Array(self.discards.values)[i].image
+                imageDict[i] = photo
+            }
+        }
+        return imageDict
+    }
+    
+    
+    //end
 }
-
-
-  /*  func getTotalImages() -> [Int : UIImage] {
-            var imageDict = [Int: UIImage]()
-            for i in 0..<selectedPhotos.count {
-                let photo = selectedPhotos[i] as PHAsset
-                manager.requestImageForAsset(photo,
-                    targetSize: CGSize(width: 300.0, height: 300.0),
-                    contentMode: .AspectFill,
-                    options: nil) { (result, _) in
-                        imageDict[i] = result
-                }
-        }
-            return imageDict
-        }
-} */
 
