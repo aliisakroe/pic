@@ -11,24 +11,51 @@ import BSImagePicker
 import Photos
 import Social
 
-class ViewController: UIViewController, UIDocumentInteractionControllerDelegate  {
+
+/** to do
+
+- discards select photo and restore to keepers
+- resize photos
+- app icon
+- app loadscreen
+- fix orientation
+*/
+
+
+
+
+
+
+
+let newKeepersNotification = "Reload the scroll view"
+
+protocol ScrollViewControllerDelegate{
+    func scrollViewSelection(controller:ScrollViewController, image: UIImage)
+}
+
+class ViewController: UIViewController, UIDocumentInteractionControllerDelegate, ScrollViewControllerDelegate  {
     
     
-    
-    
-    var photoList = PhotoList()
+    var photoList = PhotoList.sharedInstance
     var vc = BSImagePickerViewController()
     var selectedPhotos : [PHAsset] = []
-   // let manager = PHImageManager.defaultManager()
     var previousMainImage : UIImage?
+    var swipe = Swipe()
     
+    let effectView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.Light))
+    let secondPhoto = UIImageView()
+    
+    @IBOutlet weak var doubleCheckButton: UIButton!
     @IBOutlet weak var imgMain: UIImageView!
     @IBOutlet weak var imgLR: UIImageView!
     @IBOutlet weak var imgLL: UIImageView!
-    @IBOutlet weak var shareButton: UIButton!
+
+    @IBOutlet var scrollViewController: UIView!
     @IBOutlet weak var picButton: UIButton!
+    @IBOutlet weak var mainSwipeRight: UISwipeGestureRecognizer!
+    @IBOutlet weak var mainSwipeLeft: UISwipeGestureRecognizer!
     
-    
+    @IBOutlet weak var shareButtonOutlet: UIButton!
     
     
     
@@ -36,45 +63,35 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate 
     // MARK: - BSImageSelector updates most of what viewDidLoad would
     
     @IBAction func imagePicker(sender: AnyObject) {
+
             selectedPhotos = [PHAsset]()
             let _ = BSImagePickerViewController()
             
             bs_presentImagePickerController(vc, animated: true,
                 select: { (asset: PHAsset) -> Void in
                 //if findPhotoKey finds key, knows created and reselected
-                if let reselectedPhotoKey = self.findPhotoKeyForAsset(asset) {
-                        self.photoList.keepPhoto(reselectedPhotoKey, keep: true)
+                if let reselectedPhotoKey = self.swipe.findPhotoKeyForAsset(asset) {
+                        self.photoList.keepPhoto(reselectedPhotoKey, list: .keepers)
                     }
                 //if findPhotoKey doesn't find key creates a new one
                 else {
-                        let newPhotoKey = self.makePhotoKeyFromPHAsset(asset)
-                        self.photoList.keepPhoto(newPhotoKey, keep: true)
+                        let newPhotoKey = self.swipe.makePhotoKeyFromPHAsset(asset)
+                    self.photoList.keepPhoto(newPhotoKey, list: .keepers)
                     }
                 }, deselect: { (asset: PHAsset) -> Void in
-                    let photoKeyForAsset = self.findPhotoKeyForAsset(asset)!
-                    self.photoList.keepPhoto(photoKeyForAsset, keep: false)
+                    let photoKeyForAsset = self.swipe.findPhotoKeyForAsset(asset)!
+                    self.photoList.keepPhoto(photoKeyForAsset, list: .discards)
                 }, cancel: { (assets: [PHAsset]) -> Void in
                 }, finish: { (assets: [PHAsset]) -> Void in
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                                                                                                     //might be buggy
                         self.picButton.hidden = true
-                        var imageArray = self.getInitialImages(self.photoList.keepers.count)
-                        if imageArray.count == 1 {
-                            self.imgMain.image = imageArray[0] as UIImage!
-                            self.imgMain.hidden = false
-                        } else if imageArray.count == 2 {
-                            self.imgLR.image = imageArray[0] as UIImage!
-                            self.imgLL.image = imageArray[1] as UIImage!
-                            self.imgLR.hidden = false
-                            self.imgLL.hidden = false
-                        } else {
-                            self.imgMain.image = imageArray[0] as UIImage!
-                            self.imgLL.image = imageArray[1] as UIImage!
-                            self.imgLR.image =  imageArray[2] as UIImage!
-                            self.imgMain.hidden = false
-                            self.imgLR.hidden = false
-                            self.imgLL.hidden = false
-                        }
+                        var imageArray = self.swipe.getInitialImages(self.photoList.keepers.count)
+                        self.imgMain.image = imageArray[0] as UIImage!
+                        self.imgMain.hidden = false
+                        
+                        // tells the scroll view to reload data
+                        NSNotificationCenter.defaultCenter().postNotificationName(newKeepersNotification, object: self)
                     })
                 }, completion: nil)
     }
@@ -85,10 +102,28 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate 
     
     // MARK: - functions
     
-    //do i really need these?
+    
+    
+    func rotated()
+    {
+        if(UIDeviceOrientationIsLandscape(UIDevice.currentDevice().orientation))
+        {
+            print("landscapefrom vc")
+            performSegueWithIdentifier("landscape", sender: self)
+        }
+        if(UIDeviceOrientationIsPortrait(UIDevice.currentDevice().orientation))
+        {
+            navigationController?.popViewControllerAnimated(false)
+            print("Portrait from vc")
+        }
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController!.navigationBar.hidden = true //dope  //LANDSCAPRE MODE DOESN"T LIKEY
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "checkMainImage", name: newKeepersNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "rotated", name: UIDeviceOrientationDidChangeNotification, object: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -99,206 +134,19 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate 
     }
     
     
-    // called from BSImagePicker
-    func getInitialImages(numberSelected : Int) -> [UIImage] {
-        var imageArray = [UIImage]()
-        var numPhotos : Int
-        if numberSelected > 3 {
-            numPhotos = 3
-        } else {
-            numPhotos = numberSelected
-        }
-        for i in 0 ... numPhotos - 1 {
-            let photo = Array(self.photoList.keepers.values)[i]
-            imageArray.append(photo.image)
-        }
-        return imageArray
+    //from delegate protocol for collection view!!!
+    
+    func scrollViewSelection(controller: ScrollViewController, image: UIImage) {
+        imgMain.image! = image
     }
     
+    func checkMainImage(){
+        var photoKey = swipe.imageToPhotoKey(imgMain.image!)
     
-    
-    func imageToPhotoKey(image: UIImage) -> PhotoKey {
-        var thePhotoKey : PhotoKey?
-        for photo in self.photoList.allPhotoList.values {
-            if isSamePhoto(photo.image, img2: image) {
-                thePhotoKey = photo
-            }
-        }
-        return thePhotoKey!
     }
-    
-    
-    
-    func makePhotoKeyFromPHAsset(asset: PHAsset) -> PhotoKey {
-        var imageForPhoto = UIImage()
-        let indexForPhoto = photoList.keepers.count + 1
-        let manager = PHImageManager.defaultManager()
-        manager.requestImageForAsset(asset,
-            targetSize: CGSize(width: 300.0, height: 300.0),
-            contentMode: .AspectFill,
-            options: nil) { (result, _) in
-                imageForPhoto = result!
-        }
-        let photo = PhotoKey(index: indexForPhoto, image: imageForPhoto)
-        return photo
-    }
-    
-    
-    
-    func findPhotoKeyForAsset(asset: PHAsset ) -> PhotoKey? {
-        var thePhotoKey : PhotoKey?
-        var dataToSearch = NSData()
-        let manager = PHImageManager.defaultManager()
-        var found = false
-        manager.requestImageForAsset(asset,
-            targetSize: CGSize(width: 300.0, height: 300.0),
-            contentMode: .AspectFill,
-            options: nil) { (result, _) in
-                dataToSearch = UIImagePNGRepresentation(result!)! //REMEMBER THAT SOME PHOTO TYPES RETURN nil ?!
-        }
-        for photo in self.photoList.keepers.values {
-            if (UIImagePNGRepresentation(photo.image)!.isEqual(dataToSearch)) {
-                thePhotoKey = photo
-                found = true
-            }
-        }
-        if !found { //if photo not in keepers will look if the key exists at all yet
-            for photo in self.photoList.allPhotoList.values {
-                if (UIImagePNGRepresentation(photo.image)!.isEqual(dataToSearch)) {
-                    thePhotoKey = photo
-                }
-            }
-        }
-        if thePhotoKey != nil {
-            return thePhotoKey
-        } else {
-            return nil
-        }
-    }
-    
-    
-    
-    func isSamePhoto(img1: UIImage, img2: UIImage) -> Bool {
-        var isSame = false
-        if (UIImagePNGRepresentation(img1)!.isEqual(UIImagePNGRepresentation(img2)!)) {
-            isSame = true
-        }
-        return isSame
-    }
-    
-    
-    
-    func anySamePhoto(imgToCheck: UIImage, img2: UIImage, img3: UIImage) -> Bool {
-        var isSame  = false
-        let photoKeyVariable = imageToPhotoKey(imgToCheck)
-        let photoKey2 = imageToPhotoKey(img2)
-        let photoKey3 = imageToPhotoKey(img3)
-        if (photoKeyVariable.index == photoKey2.index) || (photoKeyVariable.index == photoKey3.index) {
-            isSame = true
-        }
-        return isSame
-    }
-    
-
-    func changePhoto(image: UIImageView, backward: Bool = false) -> UIImage {
-        var newImage = getNextPhoto(image.image!, backward: backward)!
-        if image == imgMain {
-            while anySamePhoto(newImage, img2: imgLL.image!, img3: imgLR.image!) { //need to make variables...
-                newImage = getNextPhoto(newImage, backward: backward)!
-            }
-        } else if image == imgLL {
-                while anySamePhoto(newImage, img2: imgMain.image!, img3: imgLR.image!) { //need to make variables...
-                    newImage = getNextPhoto(newImage, backward: backward)!
-            }
-        } else if image == imgLR {
-            while anySamePhoto(newImage, img2: imgMain.image!, img3: imgLL.image!) { //need to make variables...
-                newImage = getNextPhoto(newImage, backward: backward)!
-            }
-        }
-        return newImage
-    }
-    
-    
-    
-    func getNextPhoto(currentPhoto: UIImage, backward: Bool = false) -> UIImage? {
-        var nextImage = UIImage()
-        var nextIndex : Int
-        let sortedKeepers = self.photoList.sortedListOfPhotoIndices(true)
-        let thePhotoKey = imageToPhotoKey(currentPhoto)
-        
-        for i in 0 ..< sortedKeepers.count {
-            if sortedKeepers[i] == thePhotoKey.index {
-                if backward {
-                    nextIndex = i - 1
-                } else {
-                    nextIndex = i + 1
-                }
-                if nextIndex > sortedKeepers.count - 1 {
-                    nextIndex = 0
-                } else if nextIndex < 0 {
-                    nextIndex = sortedKeepers.count - 1
-                }
-                nextIndex = sortedKeepers[nextIndex]
-                for index in self.photoList.keepers.keys {
-                    if nextIndex == index {
-                        let nextPhotoKey = self.photoList.keepers[index]
-                        nextImage = (nextPhotoKey?.image)!
-                    }
-                }
-            }
-        }
-        return nextImage
-    }
-    
-    
-    
-    func doubleCheck() {
-        // when swipe up to delete, fuzz out and tap to really delete
-        // if tap then swipeUpToDelete
-    }
-    
-    
-    
-    func swipeUpDelete(image: UIImageView) {
-        let currentPhotoKey = imageToPhotoKey(image.image!)
-        if photoList.keepers.count > 3 {
-            let newImage = changePhoto(image)
-            image.image = newImage
-        }
-        self.photoList.keepPhoto(currentPhotoKey, keep: false)
-        self.photoList.discards[currentPhotoKey.index] = currentPhotoKey
-        
-        //resize images if less than the three images
-        
-        if photoList.keepers.count == 2 {
-            if image == imgMain {
-                imgMain.image = imgLR.image
-                imgLR.hidden = true
-                imgLR.image = nil
-            } else {
-                image.hidden = true
-                image.image = nil
-            }
-        } else if photoList.keepers.count == 1 {
-            
-            //final photo now share functionality
-            
-            imgLL.hidden = true
-            imgLR.hidden = true
-            shareButton.hidden = false
-            if image == imgMain {
-                imgMain.image = imgLL.image
-                imgLL.image = nil
-            }
-        }
-    }
-    
-    
-    
-    
-    
     
     //MARK: - SOCIAL FRAMEWORK actionSheet
+    
     
     
     
@@ -357,9 +205,45 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate 
         alertController.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
         presentViewController(alertController, animated: true, completion: nil)
     }
+    
+    
+    // MARK: - Landscape Size Class
+    
+
+    
+//    func application(application: UIApplication, supportedInterfaceOrientationsForWindow window: UIWindow) -> Int {
+//        
+//       // if self.view.window?.rootViewController?.presentedViewController is LandscapeViewController {
+//       //     return Int(UIInterfaceOrientationMask.All.rawValue);
+//       // } else {
+//            return Int(UIInterfaceOrientationMask.Portrait.rawValue);
+//       // }
+//        
+//    }
+    
 
     
     
+    override func shouldAutorotate() -> Bool {
+        return false
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
     
     //MARK: - Navigation
     
@@ -367,12 +251,17 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate 
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "discards" {
-            let destination = segue.destinationViewController as? DiscardsVC
-            destination!.photoList = self.photoList
+            segue.destinationViewController as? DiscardsVC
+           // destination!.photoList = self.photoList                   // in favor of the singleton!!!
+        }
+        if segue.identifier == "scrollCollectionView" {
+            var destination = segue.destinationViewController as? ScrollViewController
+            destination!.delegate = self
+        }
+        if segue.identifier == "landscape" {
+            var destination = segue.destinationViewController as? LandscapeViewController
            // destination!.delegate = self
         }
-        // Get the new view controller using [segue destinationViewController].
-        // Pass the selected object to the new view controller.
     }
     
     
@@ -381,73 +270,43 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate 
     // MARK: - Action (Gestures)
     
     
-    
-    @IBAction func tapLL(sender: AnyObject) {
-        if isSamePhoto(imgMain.image!, img2: imgLL.image!) {
-            imgMain.image = self.previousMainImage!
-        } else {
-            self.previousMainImage = imgMain.image!
-            imgMain.image = imgLL.image!
-            
-        }
-    }
-    
-    @IBAction func tapLR(sender: AnyObject) {
-        if imgMain.image != nil {
-            if isSamePhoto(imgMain.image!, img2: imgLR.image!) {
-                if previousMainImage != nil {
-                    imgMain.image = self.previousMainImage!
-                }
-            }else {
-                self.previousMainImage = imgMain.image!
-            }
-        } //BUGGY BUGGY BUGGY BUGGY BUGGY BUGGY BUGGY BUGGY BUGGY BUGGY BUGGY BUGGY BUGGY BUGGY BUGGY BUGGY BUGGY 
-            imgMain.image = imgLR.image!
-            imgMain.hidden = false
-    }
-    
-    @IBAction func landscapeLLSwipe(sender: AnyObject) {
-        let newImage = changePhoto(imgLL)
-        imgLL.image = newImage
-    }
-    
     @IBAction func swipeToCollectionView(sender: UIPanGestureRecognizer) {      //getting called twice?!?!?! must be long press thing
         print("Going to discards collection view")
         performSegueWithIdentifier("discards", sender: sender)
     }
     
-    @IBAction func landscapeLRSwipe(sender: AnyObject) {
-        let newImage = changePhoto(imgLR)
-        imgLR.image = newImage
-    }
-    
-    //ONLY IN LANDSCAPE, what about imgMain access??
-    @IBAction func swipeUpLL(sender: AnyObject) {
-        swipeUpDelete(imgLL)
-    }
-    
-    //ONLY IN LANDSCAPE, what about imgMain access??
-    @IBAction func swipeUpLR(sender: AnyObject) {
-        swipeUpDelete(imgLR)
-    }
-    
     @IBAction func swipeUpMain(sender: AnyObject) {
-        swipeUpDelete(imgMain)
+        if photoList.keepers.count != 1 {
+            //doubleCheck(false)
+            swipe.swipeUpDelete(imgMain)
+        NSNotificationCenter.defaultCenter().postNotificationName(newKeepersNotification, object: self)
+        }
     }
 
     @IBAction func mainSwipeLeft(sender: UISwipeGestureRecognizer) {
-        let newImage = changePhoto(imgMain, backward: true)
-        imgMain.image = newImage
+        if photoList.keepers.count != 1 {
+            let newImage = swipe.getNextPhoto(imgMain.image!, direction: .left)
+            imgMain.image = newImage
+        }
     }
     
     @IBAction func mainSwipeRight(sender: UISwipeGestureRecognizer) {
-        let newImage = changePhoto(imgMain)
+        if photoList.keepers.count != 1 {
+        let newImage = swipe.getNextPhoto(imgMain.image!, direction: .right)
         imgMain.image = newImage
+        }
     }
-    @IBAction func shareButton(sender: AnyObject) {
+
+    @IBAction func shareButtonAction(sender: AnyObject) {
         shareOptions()
     }
     
+    @IBAction func doubleCheckButtonAction(sender: UIButton) {
+        swipe.swipeUpDelete(imgMain)
+    }
+   
+    
+    //end
 }
 
 

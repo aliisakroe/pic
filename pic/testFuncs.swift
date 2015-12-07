@@ -132,7 +132,7 @@ let imageViewTemp = UIImageView(frame: CGRectMake(x, y, width, 200))
 imageViewTemp.image = Array(self.photoList.keepers.values)[i].image
 self.scrollView.addSubview(imageViewTemp)
 }
-let length = (CGFloat)(self.scrollView.frame.width) * (CGFloat)(self.photoList.keepers.keys.count / 2)
+let length = (CGFloat)(self.scrollView.frame.width) * (CGFloat)(self.photoList.keepers.keys.count / 2)/Users/Aliisa/sparkIOS/pic/pic/ViewController.swift
 self.scrollView.contentSize = CGSizeMake(length, self.scrollView.frame.height)*/
 
 /*

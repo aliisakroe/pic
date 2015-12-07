@@ -13,11 +13,38 @@ private let sectionInsets = UIEdgeInsets(top: 50.0, left: 20.0, bottom: 50.0, ri
 
 class DiscardsVC: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     
+    var largePhotoIndexPath : NSIndexPath? {
+        didSet {
+            //2
+            var indexPaths = [NSIndexPath]()
+            if largePhotoIndexPath != nil {
+                indexPaths.append(largePhotoIndexPath!)
+            }
+            if oldValue != nil {
+                indexPaths.append(oldValue!)
+            }
+            //3
+            collectionView?.performBatchUpdates({
+                self.collectionView?.reloadItemsAtIndexPaths(indexPaths)
+                return
+                }){
+                    completed in
+                    //4
+                    if self.largePhotoIndexPath != nil {
+                        self.collectionView?.scrollToItemAtIndexPath(
+                            self.largePhotoIndexPath!,
+                            atScrollPosition: .CenteredVertically,
+                            animated: true)
+                    }
+            }
+        }
+    }
+    
     @IBOutlet weak var label: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
     
-    var photoList = PhotoList()
-    var delegate : DiscardsVC? = nil
+    var photoList = PhotoList.sharedInstance
+   // var delegate : DiscardsVC? = nil
     
     
     override func viewDidLoad() {
@@ -28,13 +55,6 @@ class DiscardsVC: UIViewController, UICollectionViewDataSource, UICollectionView
         } else {
             collectionView.hidden = false
         }
-        
-        // Uncomment the following line to preserve selection between presentations
-       // self.clearsSelectionOnViewWillAppear = false
-        
-        // Register cell classes
-        
-        // Do any additional setup after loading the view.
     }
     
     override func didReceiveMemoryWarning() {
@@ -54,9 +74,9 @@ class DiscardsVC: UIViewController, UICollectionViewDataSource, UICollectionView
     }
     
      func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! CollectionViewCell //ERROR
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! CollectionViewCell 
         dispatch_async(dispatch_get_main_queue(), {
-        let allPhotos = Array(self.photoList.getTotalImages("discards").values)
+        let allPhotos = Array(self.photoList.getTotalImages(.discards).values)
         cell.image!.image = allPhotos[indexPath.row]
         cell.hidden = false
         cell.image.hidden = false
@@ -64,11 +84,58 @@ class DiscardsVC: UIViewController, UICollectionViewDataSource, UICollectionView
         return cell
     }
     
-   /* @IBAction func swipeBack(sender: UIPanGestureRecognizer) {
-        performSegueWithIdentifier("swipeBack", sender: nil)
-        
+    
+    /*
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        let selectedCell = collectionView.cellForItemAtIndexPath(indexPath)
+        let cellImage = Array(photoList.getTotalImages("keepers").values)[indexPath.row]
+        if (delegate != nil) {
+            delegate!.scrollViewSelection(self, image: cellImage)
+        }
     }
     
+    func collectionView(collectionView: UICollectionView, willDisplayCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath){
+        let cell = collectionView.cellForItemAtIndexPath(indexPath)
+        let image = Array(photoList.getTotalImages("keepers").values)[indexPath.section]
+        NSNotificationCenter.defaultCenter().postNotificationName(selectedCellNotification, object: self)
+    }
+
+    func collectionView(collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+            
+            let selectedPhoto = photoForIndexPath(indexPath)
+            
+            // New code
+            if indexPath == largePhotoIndexPath {
+                var size = collectionView.bounds.size
+                size.height -= topLayoutGuide.length
+                size.height -= (sectionInsets.top + sectionInsets.right)
+                size.width -= (sectionInsets.left + sectionInsets.right)
+                return selectedPhoto.sizeToFillWidthOfSize(size)
+            }
+            // Previous code
+            if var size = selectedPhoto.thumbnail?.size {
+                size.width += 10
+                size.height += 10
+                return size
+            }
+            return CGSize(width: 100, height: 100)
+    }
+    
+    
+    
+    
+    */
+    
+    
+    
+    //I WOULD LIKE AN OPTION TO RESTORE A PHOTO TO KEEPERS, DELETE PHOTOS FROM PHONE
+    
+    
+    
+    
+/*
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -80,4 +147,5 @@ class DiscardsVC: UIViewController, UICollectionViewDataSource, UICollectionView
     }
     */
 
+    //end
 }

@@ -16,6 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+       // NSNotificationCenter.defaultCenter().addObserver(self, selector: "rotated", name: UIDeviceOrientationDidChangeNotification, object: nil)
         return true
     }
 
@@ -41,6 +42,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
+//    func rotated()
+//    {
+//        if(UIDeviceOrientationIsLandscape(UIDevice.currentDevice().orientation))
+//        {
+//            print("landscape")
+//            self.window?.makeKeyAndVisible()
+//        }
+//        
+//        if(UIDeviceOrientationIsPortrait(UIDevice.currentDevice().orientation))
+//        {
+//            print("Portrait")
+//        }
+//        
+//    }
 
 }
 

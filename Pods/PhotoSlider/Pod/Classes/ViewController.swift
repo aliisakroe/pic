@@ -27,11 +27,19 @@ public class ViewController:UIViewController, UIScrollViewDelegate, PhotoSliderI
 
     var imageURLs:Array<NSURL>?
     var images:Array<UIImage>?
+    @IBOutlet weak var scrollViewController: UIView!
     var photos:Array<PhotoSlider.Photo>?
     var usingImageType = PhotoSliderControllerUsingImageType.None
     var backgroundView:UIView!
     var effectView:UIVisualEffectView!
+    @IBOutlet weak var doubleCheckButton: UIButton!
+    @IBOutlet weak var shareButtonOutlet: UIButton!
+
     var closeButton:UIButton?
+
+    @IBOutlet var mainSwipeRIght: UISwipeGestureRecognizer!
+    @IBOutlet var mainSwipeLeft: UISwipeGestureRecognizer!
+    @IBOutlet var mainSwipeRight: UISwipeGestureRecognizer!
     var scrollMode:PhotoSliderControllerScrollMode = .None
     var scrollInitalized = false
     var closeAnimating = false
