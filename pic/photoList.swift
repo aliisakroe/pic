@@ -23,9 +23,9 @@ class PhotoList {
         case discards
     }
     
-    func photoIsInList(photo: PhotoKey, list: [PhotoKey]) -> Bool {
+    func photoKeyExists(photo: PhotoKey) -> Bool {
         var found = false
-        for eachPhoto in list {
+        for eachPhoto in allPhotoList.values {
             if photo.index == eachPhoto.index {
                 found = true
             } else {
@@ -39,8 +39,8 @@ class PhotoList {
         if list == .keepers {
             keepers[photo.index] = photo
             self.discards[photo.index] = nil
-            if !photoIsInList(photo, list: Array(self.allPhotoList.values) ) {
-                allPhotoList[photo.index] = photo
+            if !photoKeyExists(photo)  {
+                self.allPhotoList[photo.index] = photo
             }
         }
         if list == .discards {
@@ -51,7 +51,7 @@ class PhotoList {
     func deletePhoto(photo: PhotoKey) {
         self.keepers[photo.index] = nil
         self.discards[photo.index] = nil
-        self.allPhotoList[photo.index] = nil
+        self.discards[photo.index] = nil
     }
 
     func sortedListOfPhotoIndices(list: PhotoList.list) -> [Int] {

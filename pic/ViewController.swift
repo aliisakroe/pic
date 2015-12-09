@@ -10,19 +10,21 @@ import UIKit
 import BSImagePicker
 import Photos
 import Social
+//import Cocoa
+//import NSImage
 
 
 /** to do
-- discards select photo and restore to keepers **
 - resize photos
 - app icon
 - app loadscreen
+-final image, then restore one from discards to keepers...
+- add swipe back gesture to discards
+- social
 */
 /* ask
 - error mesage for collection view
-- resize images
-- segue to discards going twice
-- collectionview.removeFromSuperView() not working after segue
+- resize images***
 - singleton okay?
 */
 
@@ -92,9 +94,18 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
                     
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         self.picButton.hidden = true
-                        var imageArray = self.swipe.getInitialImages(self.photoList.keepers.count)
+                      //  var imageArray = self.swipe.getInitialImages(self.photoList.keepers.count)
 //    resize                   let resizedImg = self.swipe.resizeImage(imageArray[0], targetSize: self.imgMain.frame.size)
-                        self.imgMain.image = imageArray[0]
+                        
+                        let manager = PHImageManager.defaultManager()
+                        var firstAsset = Array(self.photoList.keepers.values)[0].asset
+                        manager.requestImageForAsset(firstAsset,
+                            targetSize: CGSizeMake(4000.0, 4000.0),
+                            contentMode: .AspectFill ,
+                            options: nil) { (result, _) in
+                                var imageForPhoto = result!
+                                self.imgMain.image = imageForPhoto
+                        }
                         self.imgMain.hidden = false
                         // tells the scroll view to reload data
                         NSNotificationCenter.defaultCenter().postNotificationName(newKeepersNotification, object: self)
@@ -104,7 +115,17 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
     }
     
     
-    
+    func setImg(imageView: UIImageView) {
+        let manager = PHImageManager.defaultManager()
+        var firstAsset = Array(self.photoList.keepers.values)[0].asset
+        manager.requestImageForAsset(firstAsset,
+            targetSize: CGSizeMake(4000.0, 4000.0),
+            contentMode: .AspectFill ,
+            options: nil) { (result, _) in
+                var imageForPhoto = result!
+                imageView.image = imageForPhoto
+        }
+    }
     
     
     // MARK: - functions
@@ -129,7 +150,6 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
         
         if photoList.keepers.count == 1 {
             lastPhotoView()
-            print("ViewWillAppear on 1 photo")
         }
     }
     
@@ -142,7 +162,6 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
     {
         if(UIDeviceOrientationIsLandscape(UIDevice.currentDevice().orientation))
         {
-            print("landscapefrom vc")
             if imgMain.image != nil {
                 performSegueWithIdentifier("landscape", sender: self)
             }
@@ -152,7 +171,6 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
             navigationController?.popViewControllerAnimated(false)
             if photoList.keepers.count == 1 {
                 lastPhotoView()                                 //NOT WORKING
-                print("scroll *should be* removed from vc")
             }
         }
     }
@@ -176,12 +194,11 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
             photoList.keepPhoto(thePhotoKey, list: .keepers)
             NSNotificationCenter.defaultCenter().postNotificationName(newKeepersNotification, object: self)
         }
-        print("you happy?")
     }
     
     func lastPhotoView() {
         print("lastPhotoView()")
-        self.scrollViewController.removeFromSuperview()
+        self.scrollViewController.hidden = true
         imgMain.image = Array(photoList.keepers.values)[0].image
         imgMain.removeGestureRecognizer(swipeUpMain)
         shareButtonOutlet.hidden = false
@@ -279,13 +296,33 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
     // MARK: - Action (Gestures)
     
     
-    @IBAction func swipeToCollectionView(sender: UIPanGestureRecognizer) {      //getting called twice?!?!?! must be long press thing
-        print("Going to discards collection view")
-        performSegueWithIdentifier("discards", sender: sender)
+    @IBAction func swipeToCollectionView(gesture: UIPanGestureRecognizer) {
+        if (gesture.state != .Ended){                                                           //HACK!!
+            return
+        }
+        performSegueWithIdentifier("discards", sender: gesture)
+    }
+    
+    func setImg(imageView: UIImageView, asset: PHAsset) {
+        let manager = PHImageManager.defaultManager()
+        manager.requestImageForAsset(asset,
+            targetSize: CGSizeMake(4000.0, 4000.0),
+            contentMode: .AspectFill ,
+            options: nil) { (result, _) in
+                var imageForPhoto = result!
+                imageView.image = imageForPhoto
+        }
+    }
+    
+    func swipeAndSetPhoto(imageView: UIImageView, direction: Swipe.direction) {
+        let currentPhotoKey = swipe.imageToPhotoKey(imageView.image!)
+        var nextPhotoKey = swipe.getNextPhotoKey(currentPhotoKey, direction: direction)
+        setImg(imageView, asset: nextPhotoKey.asset)
     }
     
     @IBAction func swipeUpMain(sender: AnyObject) {
-        imgMain.image = swipe.swipeUpDelete(imgMain)
+        let newPhotoKey = swipe.swipeUpDelete(imgMain)
+        setImg(imgMain, asset: newPhotoKey.asset)
         if photoList.keepers.count == 1 {
             NSNotificationCenter.defaultCenter().postNotificationName(lastPhoto, object: self)
         }
@@ -294,15 +331,13 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
 
     @IBAction func mainSwipeLeft(sender: UISwipeGestureRecognizer) {
         if photoList.keepers.count != 1 {
-            let newImage = swipe.getNextPhoto(imgMain.image!, direction: .left)
-            imgMain.image = newImage
+            swipeAndSetPhoto(imgMain, direction: .left)
         }
     }
     
     @IBAction func mainSwipeRight(sender: UISwipeGestureRecognizer) {
         if photoList.keepers.count != 1 {
-        let newImage = swipe.getNextPhoto(imgMain.image!, direction: .right)
-        imgMain.image = newImage
+         swipeAndSetPhoto(imgMain, direction: .right)
         }
     }
 
@@ -310,10 +345,6 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
         shareOptions()
     }
     
-    @IBAction func doubleCheckButtonAction(sender: UIButton) {
-        swipe.swipeUpDelete(imgMain)
-    }
-   
     
     //end
 }

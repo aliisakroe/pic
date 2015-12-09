@@ -19,7 +19,6 @@
 		64C7B5421C11F8900079052E /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C7B5411C11F8900079052E /* CollectionViewCell.swift */; };
 		64C7B5441C1205D70079052E /* DiscardsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C7B5431C1205D70079052E /* DiscardsVC.swift */; };
 		64C7B54B1C1363C50079052E /* ScrollViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C7B54A1C1363C50079052E /* ScrollViewController.swift */; };
-		64C87B5F1C1771D2001FFB26 /* iosTrash.png in Resources */ = {isa = PBXBuildFile; fileRef = 64C87B5E1C1771D2001FFB26 /* iosTrash.png */; };
 		64C87B611C17ABBC001FFB26 /* ios8_check_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 64C87B601C17ABBC001FFB26 /* ios8_check_icon.png */; };
 		64CF3C561C0B873800CD1D57 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64CF3C551C0B873800CD1D57 /* AppDelegate.swift */; };
 		64CF3C581C0B873800CD1D57 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64CF3C571C0B873800CD1D57 /* ViewController.swift */; };
@@ -61,7 +60,6 @@
 		64C7B5411C11F8900079052E /* CollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		64C7B5431C1205D70079052E /* DiscardsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscardsVC.swift; sourceTree = "<group>"; };
 		64C7B54A1C1363C50079052E /* ScrollViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollViewController.swift; sourceTree = "<group>"; };
-		64C87B5E1C1771D2001FFB26 /* iosTrash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iosTrash.png; sourceTree = "<group>"; };
 		64C87B601C17ABBC001FFB26 /* ios8_check_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ios8_check_icon.png; sourceTree = "<group>"; };
 		64CF3C521C0B873800CD1D57 /* pic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		64CF3C551C0B873800CD1D57 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -170,7 +168,6 @@
 				64C7B5471C133BC90079052E /* Controller */,
 				64CF3C5C1C0B873800CD1D57 /* Assets.xcassets */,
 				64C87B601C17ABBC001FFB26 /* ios8_check_icon.png */,
-				64C87B5E1C1771D2001FFB26 /* iosTrash.png */,
 				64CF3C5E1C0B873800CD1D57 /* LaunchScreen.storyboard */,
 				64CF3C611C0B873800CD1D57 /* Info.plist */,
 			);
@@ -324,7 +321,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				64C87B5F1C1771D2001FFB26 /* iosTrash.png in Resources */,
 				64CF3C601C0B873800CD1D57 /* LaunchScreen.storyboard in Resources */,
 				64C87B611C17ABBC001FFB26 /* ios8_check_icon.png in Resources */,
 				64CF3C5D1C0B873800CD1D57 /* Assets.xcassets in Resources */,

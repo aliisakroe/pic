@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Photos
 
 
 class LandscapeViewController: UIViewController {
@@ -69,48 +70,58 @@ class LandscapeViewController: UIViewController {
     }
 
     @IBAction func rightSwipeUp(sender: UISwipeGestureRecognizer) {
-        var nextImage = swipe.swipeUpDelete(rightImage)
-        nextImage = swipe.differentPhoto(nextImage, imageView2: leftImage, direction: .right)
-        rightImage.image = nextImage
+        var nextPhotoKey = swipe.swipeUpDelete(rightImage)
+        nextPhotoKey = swipe.differentPhoto(nextPhotoKey, imageView2: leftImage, direction: .right)
+        setImg(rightImage, asset: nextPhotoKey.asset)
         NSNotificationCenter.defaultCenter().postNotificationName(newKeepersNotification, object: self)
         if photoList.keepers.count == 1 {
              NSNotificationCenter.defaultCenter().postNotificationName(lastPhoto, object: self)
         }
     }
     
+    func setImg(imageView: UIImageView, asset: PHAsset) {
+        let manager = PHImageManager.defaultManager()
+        manager.requestImageForAsset(asset,
+            targetSize: CGSizeMake(4000.0, 4000.0),
+            contentMode: .AspectFill ,
+            options: nil) { (result, _) in
+                var imageForPhoto = result!
+                imageView.image = imageForPhoto
+        }
+    }
+    
     //COULD PROBABLY REWRITE ALL OF THESE INTO A FUNCTION :P
     
     @IBAction func leftSwipeUp (sender: UISwipeGestureRecognizer) {
-        var nextImage = swipe.swipeUpDelete(leftImage)
-        nextImage = swipe.differentPhoto(nextImage, imageView2: rightImage, direction: .right)
-        leftImage.image = nextImage
+        var nextPhotoKey = swipe.swipeUpDelete(leftImage)
+        nextPhotoKey = swipe.differentPhoto(nextPhotoKey, imageView2: rightImage, direction: .right)
+        setImg(leftImage, asset: nextPhotoKey.asset)
         NSNotificationCenter.defaultCenter().postNotificationName(newKeepersNotification, object: self)
         if photoList.keepers.count == 1 {
             NSNotificationCenter.defaultCenter().postNotificationName(lastPhoto, object: self)
         }
     }
     
+    func swipeAndSetPhoto(imageView: UIImageView, direction: Swipe.direction) {
+        let currentPhotoKey = swipe.imageToPhotoKey(imageView.image!)
+        var nextPhotoKey = swipe.getNextPhotoKey(currentPhotoKey, direction: direction)
+        nextPhotoKey = swipe.differentPhoto(nextPhotoKey, imageView2: rightImage, direction: direction)
+        setImg(imageView, asset: nextPhotoKey.asset)
+    }
+    
     @IBAction func swipeRonL(sender: AnyObject) {
-        var nextImage = swipe.getNextPhoto(leftImage.image!, direction: .right)
-        nextImage = swipe.differentPhoto(nextImage, imageView2: rightImage, direction: .right)
-        leftImage.image = nextImage
+        swipeAndSetPhoto(leftImage, direction: .right)
     }
 
     @IBAction func swipeRonR(sender: AnyObject) {
-        var nextImage = swipe.getNextPhoto(rightImage.image!, direction: .right)
-        nextImage = swipe.differentPhoto(nextImage, imageView2: leftImage, direction: .right)
-        rightImage.image = nextImage
+        swipeAndSetPhoto(rightImage, direction: .right)
     }
     
     @IBAction func swipeLonL(sender: AnyObject) {
-        var nextImage = swipe.getNextPhoto(leftImage.image!, direction: .left)
-        nextImage = swipe.differentPhoto(nextImage, imageView2: rightImage, direction: .left)
-        leftImage.image = nextImage
+        swipeAndSetPhoto(leftImage, direction: .left)
     }
     @IBAction func swipeLonR(sender: AnyObject) {
-        var nextImage = swipe.getNextPhoto(rightImage.image!, direction: .left)
-        nextImage = swipe.differentPhoto(nextImage, imageView2: leftImage, direction: .left)
-        rightImage.image = nextImage
+        swipeAndSetPhoto(rightImage, direction: .left)
     }
     
     /*

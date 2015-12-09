@@ -540,32 +540,18 @@
                                     <outletCollection property="gestureRecognizers" destination="EZk-mq-T6M" appends="YES" id="4iO-al-73u"/>
                                 </connections>
                             </imageView>
-                            <button hidden="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jeL-fy-XGN">
-                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
-                                <animations/>
-                                <state key="normal" title="???">
-                                    <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                </state>
-                                <connections>
-                                    <action selector="doubleCheckButtonAction:" destination="USs-NR-tp8" eventType="touchUpInside" id="CON-Fv-DeG"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="MCa-7F-pSB" firstAttribute="centerX" secondItem="LBg-2b-FKK" secondAttribute="centerX" id="6yB-Lt-azp"/>
-                            <constraint firstItem="jeL-fy-XGN" firstAttribute="centerX" secondItem="LBg-2b-FKK" secondAttribute="centerX" id="C2c-v1-OcP"/>
                             <constraint firstAttribute="trailingMargin" secondItem="AUI-eB-noy" secondAttribute="trailing" constant="11" id="CBW-36-1Rk">
                                 <variation key="widthClass=compact" constant="0.0"/>
                             </constraint>
                             <constraint firstItem="GsH-iF-04e" firstAttribute="centerX" secondItem="LBg-2b-FKK" secondAttribute="centerX" id="M0w-uD-Wue"/>
                             <constraint firstItem="AUI-eB-noy" firstAttribute="top" secondItem="teQ-bq-mBR" secondAttribute="bottom" id="Sj8-be-asI">
                                 <variation key="widthClass=compact" constant="35"/>
-                            </constraint>
-                            <constraint firstItem="jeL-fy-XGN" firstAttribute="top" secondItem="teQ-bq-mBR" secondAttribute="bottom" constant="25" id="X7r-vD-sXs">
-                                <variation key="widthClass=compact" constant="5"/>
                             </constraint>
                             <constraint firstItem="AUI-eB-noy" firstAttribute="leading" secondItem="LBg-2b-FKK" secondAttribute="leadingMargin" id="fnP-hy-3B5"/>
                             <constraint firstItem="lGA-e2-tJX" firstAttribute="top" secondItem="MCa-7F-pSB" secondAttribute="bottom" constant="40" id="tkk-id-Wyu">
@@ -579,13 +565,10 @@
                                 <exclude reference="GsH-iF-04e"/>
                                 <exclude reference="Wo2-tQ-Rtv"/>
                                 <exclude reference="AUI-eB-noy"/>
-                                <exclude reference="jeL-fy-XGN"/>
                             </mask>
                             <mask key="constraints">
                                 <exclude reference="tkk-id-Wyu"/>
                                 <exclude reference="6yB-Lt-azp"/>
-                                <exclude reference="C2c-v1-OcP"/>
-                                <exclude reference="X7r-vD-sXs"/>
                                 <exclude reference="CBW-36-1Rk"/>
                                 <exclude reference="Sj8-be-asI"/>
                                 <exclude reference="fnP-hy-3B5"/>
@@ -599,13 +582,10 @@
                                 <include reference="GsH-iF-04e"/>
                                 <include reference="Wo2-tQ-Rtv"/>
                                 <include reference="AUI-eB-noy"/>
-                                <include reference="jeL-fy-XGN"/>
                             </mask>
                             <mask key="constraints">
                                 <include reference="tkk-id-Wyu"/>
                                 <include reference="6yB-Lt-azp"/>
-                                <include reference="C2c-v1-OcP"/>
-                                <include reference="X7r-vD-sXs"/>
                                 <include reference="CBW-36-1Rk"/>
                                 <include reference="Sj8-be-asI"/>
                                 <include reference="fnP-hy-3B5"/>
@@ -620,7 +600,6 @@
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="By3-0b-ENS"/>
                     <connections>
-                        <outlet property="doubleCheckButton" destination="jeL-fy-XGN" id="imS-mC-Thr"/>
                         <outlet property="imgMain" destination="AUI-eB-noy" id="2bZ-bD-ZS0"/>
                         <outlet property="mainSwipeLeft" destination="OdS-1a-Ukp" id="7rz-wp-5kS"/>
                         <outlet property="mainSwipeRight" destination="Ngd-QS-bdi" id="ew6-Ry-5xY"/>
@@ -651,7 +630,7 @@
                 <screenEdgePanGestureRecognizer delaysTouchesBegan="YES" delaysTouchesEnded="NO" minimumNumberOfTouches="1" maximumNumberOfTouches="1" id="DcD-wP-ahq">
                     <rectEdge key="edges" right="YES"/>
                     <connections>
-                        <action selector="swipeToCollectionView:" destination="USs-NR-tp8" id="qDa-DR-mbS"/>
+                        <action selector="swipeToCollectionView:" destination="USs-NR-tp8" id="LPJ-jK-Bql"/>
                     </connections>
                 </screenEdgePanGestureRecognizer>
             </objects>

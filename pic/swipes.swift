@@ -19,23 +19,20 @@ class Swipe {
         case left
     }
     
-    func swipeUpDelete(imageView: UIImageView) -> UIImage {
-        var nextImage = UIImage()
+    func swipeUpDelete(imageView: UIImageView) -> PhotoKey {
         let currentPhotoKey = imageToPhotoKey(imageView.image!)
-        let currentImage = imageView.image!
-        nextImage = getNextPhoto(currentImage, direction: .right)
+        let nextPhotoKey = getNextPhotoKey(currentPhotoKey, direction: .right)
         photoList.keepPhoto(currentPhotoKey, list: .discards)
         photoList.discards[currentPhotoKey.index] = currentPhotoKey
-        return nextImage
+        return nextPhotoKey
     }
     
-    func getNextPhoto(currentPhoto: UIImage, direction: Swipe.direction) -> UIImage {
-        var nextImage = UIImage()
-        var nextIndex : Int
-        let sortedKeepers = photoList.getTotalImages(.keepers)
+    func getNextPhotoKey(currentPhotoKey: PhotoKey, direction: Swipe.direction) -> PhotoKey {
+        var nextIndex = 0
+        let sortedKeepers = photoList.sortedListOfPhotoIndices(.keepers)
         if sortedKeepers.count > 1 {
             for i in 0 ..< sortedKeepers.count  {
-                if isSamePhoto(sortedKeepers[i]!, img2: currentPhoto) {
+                if sortedKeepers[i] == currentPhotoKey.index {
                     if direction == .left {
                         nextIndex = i - 1
                     } else {
@@ -46,51 +43,47 @@ class Swipe {
                     } else if nextIndex < 0 {
                         nextIndex = sortedKeepers.count - 1
                     }
-                    nextImage = sortedKeepers[nextIndex]!
                 }
             }
         }
-        return nextImage
+        return photoList.keepers[nextIndex]!
     }
 
-    func isSamePhoto(img1: UIImage, img2: UIImage) -> Bool {
+    func isSameAsset(asset1: PHAsset, asset2: PHAsset) -> Bool {
         var isSame = false
-        if (UIImagePNGRepresentation(img1)!.isEqual(UIImagePNGRepresentation(img2)!)) {
+        if asset1.isEqual(asset2) {
             isSame = true
         }
         return isSame
     }
     
-    func differentPhoto(potentialImage: UIImage, imageView2: UIImageView, direction: Swipe.direction) -> UIImage {
-        var differentImage = UIImage()
-        if isSamePhoto(potentialImage, img2: imageView2.image!) {
-            differentImage = getNextPhoto(potentialImage, direction: direction)
+    func imageToAsset(img: UIImage) -> PHAsset {
+        let thePhotoKey = imageToPhotoKey(img)
+        return thePhotoKey.asset
+    }
+    
+    
+    func differentPhoto(nextPhotoKey: PhotoKey, imageView2: UIImageView, direction: Swipe.direction) -> PhotoKey {
+        let otherViewAsset = imageToPhotoKey(imageView2.image!)
+        if isSameAsset(nextPhotoKey.asset, asset2: otherViewAsset.asset) {
+           return getNextPhotoKey(nextPhotoKey, direction: direction)
         } else {
-            differentImage = potentialImage
+            return nextPhotoKey
         }
-        return differentImage
     }
     
     func findPhotoKeyForAsset(asset: PHAsset ) -> PhotoKey? {
         var thePhotoKey : PhotoKey?
-        var dataToSearch = NSData()
-        let manager = PHImageManager.defaultManager()
         var found = false
-        manager.requestImageForAsset(asset,
-            targetSize: CGSize(width: 300.0, height: 300.0),
-            contentMode: .AspectFill,
-            options: nil) { (result, _) in
-                dataToSearch = UIImagePNGRepresentation(result!)! //REMEMBER THAT SOME PHOTO TYPES RETURN nil ?!
-        }
         for photo in photoList.keepers.values {
-            if (UIImagePNGRepresentation(photo.image)!.isEqual(dataToSearch)) {
+            if isSameAsset(asset, asset2: photo.asset){
                 thePhotoKey = photo
                 found = true
             }
         }
         if !found { //if photo not in keepers will look if the key exists at all yet
             for photo in photoList.allPhotoList.values {
-                if (UIImagePNGRepresentation(photo.image)!.isEqual(dataToSearch)) {
+                if isSameAsset(asset, asset2: photo.asset) {
                     thePhotoKey = photo
                 }
             }
@@ -103,83 +96,35 @@ class Swipe {
     }
     
     func makePhotoKeyFromPHAsset(asset: PHAsset) -> PhotoKey {
-        var imageForPhoto = UIImage()
         let indexForPhoto = photoList.keepers.count + 1
-        let manager = PHImageManager.defaultManager()
-        manager.requestImageForAsset(asset,
-            targetSize: CGSize(width: 300.0, height: 300.0),
-            contentMode: .AspectFill,
-            options: nil) { (result, _) in
-                imageForPhoto = result!
-        }
-        let photo = PhotoKey(index: indexForPhoto, image: imageForPhoto, asset: asset)
+        let photo = PhotoKey(index: indexForPhoto, image: nil, asset: asset)
         return photo
     }
     
-    func imageToPhotoKey(image: UIImage) -> PhotoKey {
-        var thePhotoKey : PhotoKey?
-        for photo in photoList.allPhotoList.values {
-            if isSamePhoto(photo.image, img2: image) {
-                thePhotoKey = photo
-            }
-        }
-        return thePhotoKey!
-    }
+//    func imageToPhotoKey(image: UIImage) -> PhotoKey {
+//        var thePhotoKey : PhotoKey?
+//        print(photoList.allPhotoList.count)
+//        for photo in photoList.allPhotoList.values {
+//            if isSameAsset(photo.asset, asset2: imageToAsset(image)) {
+//                thePhotoKey = photo
+//            }
+//        }
+//        return thePhotoKey!
+//    }
     
     func photoIsIn(image: UIImage) -> PhotoList.list? {
         var list: PhotoList.list?
         for eachPhotoKey in photoList.keepers.values {
-            if isSamePhoto(image, img2: eachPhotoKey.image) {
+            if isSameAsset(imageToAsset(image), asset2: eachPhotoKey.asset) {
                 list = .keepers
             }
         }
         for eachPhotoKey in photoList.discards.values {
-            if isSamePhoto(image, img2: eachPhotoKey.image) {
+            if isSameAsset(imageToAsset(image), asset2: eachPhotoKey.asset) {
                 list = .discards
             }
         }
         return list
-    }
-    
-    func getInitialImages(numberSelected : Int) -> [UIImage] {
-        var imageArray = [UIImage]()
-        var numPhotos : Int
-        if numberSelected > 3 {
-            numPhotos = 3
-        } else {
-            numPhotos = numberSelected
-        }
-        for i in 0 ... numPhotos - 1 {
-            let photo = Array(photoList.keepers.values)[i]
-            imageArray.append(photo.image)
-        }
-        return imageArray
-    }
-    
-    func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
-            let size = image.size
-            
-            let widthRatio  = targetSize.width  / image.size.width
-            let heightRatio = targetSize.height / image.size.height
-            
-            // Figure out what our orientation is, and use that to form the rectangle
-            var newSize: CGSize
-            if(widthRatio > heightRatio) {
-                newSize = CGSizeMake(size.width * heightRatio, size.height * heightRatio)
-            } else {
-                newSize = CGSizeMake(size.width * widthRatio,  size.height * widthRatio)
-            }
-            
-            // This is the rect that we've calculated out and this is what is actually used below
-            let rect = CGRectMake(0, 0, newSize.width, newSize.height)
-            
-            // Actually do the resizing to the rect using the ImageContext stuff
-            UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
-            image.drawInRect(rect)
-            let newImage = UIGraphicsGetImageFromCurrentImageContext()
-            UIGraphicsEndImageContext()
-            
-            return newImage
     }
 
     //end
