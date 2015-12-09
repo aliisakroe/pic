@@ -19,15 +19,14 @@ class Swipe {
         case left
     }
     
-    func swipeUpDelete(imageView: UIImageView) {
+    func swipeUpDelete(imageView: UIImageView) -> UIImage {
+        var nextImage = UIImage()
         let currentPhotoKey = imageToPhotoKey(imageView.image!)
-        if photoList.keepers.count > 2 {
-            let currentImage = imageView.image!
-            let newImage = getNextPhoto(currentImage, direction: .right)
-            imageView.image = newImage
-        }
+        let currentImage = imageView.image!
+        nextImage = getNextPhoto(currentImage, direction: .right)
         photoList.keepPhoto(currentPhotoKey, list: .discards)
         photoList.discards[currentPhotoKey.index] = currentPhotoKey
+        return nextImage
     }
     
     func getNextPhoto(currentPhoto: UIImage, direction: Swipe.direction) -> UIImage {
@@ -113,7 +112,7 @@ class Swipe {
             options: nil) { (result, _) in
                 imageForPhoto = result!
         }
-        let photo = PhotoKey(index: indexForPhoto, image: imageForPhoto)
+        let photo = PhotoKey(index: indexForPhoto, image: imageForPhoto, asset: asset)
         return photo
     }
     
@@ -129,7 +128,6 @@ class Swipe {
     
     func photoIsIn(image: UIImage) -> PhotoList.list? {
         var list: PhotoList.list?
-        var photoKey = imageToPhotoKey(image)
         for eachPhotoKey in photoList.keepers.values {
             if isSamePhoto(image, img2: eachPhotoKey.image) {
                 list = .keepers
@@ -157,6 +155,32 @@ class Swipe {
         }
         return imageArray
     }
-
     
+    func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
+            let size = image.size
+            
+            let widthRatio  = targetSize.width  / image.size.width
+            let heightRatio = targetSize.height / image.size.height
+            
+            // Figure out what our orientation is, and use that to form the rectangle
+            var newSize: CGSize
+            if(widthRatio > heightRatio) {
+                newSize = CGSizeMake(size.width * heightRatio, size.height * heightRatio)
+            } else {
+                newSize = CGSizeMake(size.width * widthRatio,  size.height * widthRatio)
+            }
+            
+            // This is the rect that we've calculated out and this is what is actually used below
+            let rect = CGRectMake(0, 0, newSize.width, newSize.height)
+            
+            // Actually do the resizing to the rect using the ImageContext stuff
+            UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+            image.drawInRect(rect)
+            let newImage = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            
+            return newImage
+    }
+
+    //end
 }

@@ -38,6 +38,7 @@ class PhotoList {
     func keepPhoto(photo: PhotoKey, list: PhotoList.list) {
         if list == .keepers {
             keepers[photo.index] = photo
+            self.discards[photo.index] = nil
             if !photoIsInList(photo, list: Array(self.allPhotoList.values) ) {
                 allPhotoList[photo.index] = photo
             }
@@ -45,6 +46,12 @@ class PhotoList {
         if list == .discards {
             self.keepers[photo.index] = nil
         }
+    }
+    
+    func deletePhoto(photo: PhotoKey) {
+        self.keepers[photo.index] = nil
+        self.discards[photo.index] = nil
+        self.allPhotoList[photo.index] = nil
     }
 
     func sortedListOfPhotoIndices(list: PhotoList.list) -> [Int] {

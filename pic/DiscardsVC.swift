@@ -7,48 +7,26 @@
 //
 
 import UIKit
+import Photos
 
 private let reuseIdentifier = "photoCell"
 private let sectionInsets = UIEdgeInsets(top: 50.0, left: 20.0, bottom: 50.0, right: 20.0)
 
 class DiscardsVC: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     
-    var largePhotoIndexPath : NSIndexPath? {
-        didSet {
-            //2
-            var indexPaths = [NSIndexPath]()
-            if largePhotoIndexPath != nil {
-                indexPaths.append(largePhotoIndexPath!)
-            }
-            if oldValue != nil {
-                indexPaths.append(oldValue!)
-            }
-            //3
-            collectionView?.performBatchUpdates({
-                self.collectionView?.reloadItemsAtIndexPaths(indexPaths)
-                return
-                }){
-                    completed in
-                    //4
-                    if self.largePhotoIndexPath != nil {
-                        self.collectionView?.scrollToItemAtIndexPath(
-                            self.largePhotoIndexPath!,
-                            atScrollPosition: .CenteredVertically,
-                            animated: true)
-                    }
-            }
-        }
-    }
-    
     @IBOutlet weak var label: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
+
     
     var photoList = PhotoList.sharedInstance
-   // var delegate : DiscardsVC? = nil
+    var delegate: ViewController? = nil
+    var selectedImages = [UIImage]()
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.collectionView.allowsMultipleSelection = true
+        self.navigationController!.navigationBar.hidden = false
         if photoList.discards.count == 0 {
             label.text = "You have not discarded any photos yet!"
             label.hidden = false
@@ -59,17 +37,13 @@ class DiscardsVC: UIViewController, UICollectionViewDataSource, UICollectionView
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
      func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return 1
     }
     
-    
      func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of items
         return photoList.discards.count
     }
     
@@ -84,68 +58,58 @@ class DiscardsVC: UIViewController, UICollectionViewDataSource, UICollectionView
         return cell
     }
     
+    func deleteImage(element: UIImage) {
+        selectedImages = selectedImages.filter() { $0 !== element }
+    }
     
-    /*
-    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        let selectedCell = collectionView.cellForItemAtIndexPath(indexPath)
-        let cellImage = Array(photoList.getTotalImages("keepers").values)[indexPath.row]
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath){
+        let selectedCell = self.collectionView.cellForItemAtIndexPath(indexPath) as! CollectionViewCell
+        selectedCell.checkIcon.hidden = false
+        let cellImage = Array(photoList.getTotalImages(.discards).values)[indexPath.row]
+        self.selectedImages.append(cellImage)
+    }
+    
+    func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath){
+        let selectedCell = self.collectionView.cellForItemAtIndexPath(indexPath) as! CollectionViewCell
+        selectedCell.checkIcon.hidden = true
+        let cellImage = Array(photoList.getTotalImages(.discards).values)[indexPath.row]
+        deleteImage(cellImage)
+    }
+    
+    @IBAction func backUndo(sender: AnyObject) {
         if (delegate != nil) {
-            delegate!.scrollViewSelection(self, image: cellImage)
+            delegate!.restoreImagesToKeepers(selectedImages)
         }
+        navigationController?.popViewControllerAnimated(true)
     }
     
-    func collectionView(collectionView: UICollectionView, willDisplayCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath){
-        let cell = collectionView.cellForItemAtIndexPath(indexPath)
-        let image = Array(photoList.getTotalImages("keepers").values)[indexPath.section]
-        NSNotificationCenter.defaultCenter().postNotificationName(selectedCellNotification, object: self)
-    }
-
-    func collectionView(collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
-        sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-            
-            let selectedPhoto = photoForIndexPath(indexPath)
-            
-            // New code
-            if indexPath == largePhotoIndexPath {
-                var size = collectionView.bounds.size
-                size.height -= topLayoutGuide.length
-                size.height -= (sectionInsets.top + sectionInsets.right)
-                size.width -= (sectionInsets.left + sectionInsets.right)
-                return selectedPhoto.sizeToFillWidthOfSize(size)
-            }
-            // Previous code
-            if var size = selectedPhoto.thumbnail?.size {
-                size.width += 10
-                size.height += 10
-                return size
-            }
-            return CGSize(width: 100, height: 100)
+    @IBAction func trash(sender: AnyObject) {
+         print(selectedImages)
+        deleteFromPhone()
     }
     
     
-    
-    
-    */
-    
-    
-    
-    //I WOULD LIKE AN OPTION TO RESTORE A PHOTO TO KEEPERS, DELETE PHOTOS FROM PHONE
-    
-    
-    
-    
-/*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == "swipeBack" {
-            let destination = segue.destinationViewController as? MainCompare
-        }
-        // Pass the selected object to the new view controller.
+    func deleteFromPhone() {
+       var assetsToDelete = [PHAsset]()
+        var photoKeyArray = [PhotoKey]()
+        let swipe = Swipe()
+            PHPhotoLibrary.sharedPhotoLibrary().performChanges( {
+                for image in self.selectedImages{
+                    let thePhotoKey = swipe.imageToPhotoKey(image)
+                    assetsToDelete.append(thePhotoKey.asset)
+                    photoKeyArray.append(thePhotoKey)
+                }
+                PHAssetChangeRequest.deleteAssets(assetsToDelete)
+                },
+                completionHandler: { success, error in
+                    NSLog("Finished deleting asset. %@", (success ? "Success" : error!))
+                    if success {
+                        for thePhotoKey in photoKeyArray{
+                            self.photoList.deletePhoto(thePhotoKey)
+                            self.collectionView.reloadData()
+                        }
+                    }
+            })
     }
-    */
-
-    //end
+    
 }

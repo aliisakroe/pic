@@ -12,4 +12,6 @@ class CollectionViewCell: UICollectionViewCell {
     
     @IBOutlet weak var image: UIImageView!
     @IBOutlet weak var imageForScroll: UIImageView!
+    @IBOutlet weak var checkIcon: UIImageView!
+    
 }

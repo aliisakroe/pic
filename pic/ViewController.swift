@@ -13,27 +13,34 @@ import Social
 
 
 /** to do
-
-- discards select photo and restore to keepers
+- discards select photo and restore to keepers **
 - resize photos
 - app icon
 - app loadscreen
-- fix orientation
+*/
+/* ask
+- error mesage for collection view
+- resize images
+- segue to discards going twice
+- collectionview.removeFromSuperView() not working after segue
+- singleton okay?
 */
 
 
 
-
-
-
-
 let newKeepersNotification = "Reload the scroll view"
+let lastPhoto = "final steps"
+let finalPhoto = "final photo"
 
-protocol ScrollViewControllerDelegate{
+protocol ScrollViewControllerDelegate {
     func scrollViewSelection(controller:ScrollViewController, image: UIImage)
 }
 
-class ViewController: UIViewController, UIDocumentInteractionControllerDelegate, ScrollViewControllerDelegate  {
+protocol DiscardsViewControllerDelegate {
+    func restoreImagesToKeepers(imageArray: [UIImage])
+}
+
+class ViewController: UIViewController, UIDocumentInteractionControllerDelegate, ScrollViewControllerDelegate, DiscardsViewControllerDelegate  {
     
     
     var photoList = PhotoList.sharedInstance
@@ -41,22 +48,17 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
     var selectedPhotos : [PHAsset] = []
     var previousMainImage : UIImage?
     var swipe = Swipe()
-    
     let effectView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.Light))
     let secondPhoto = UIImageView()
     
     @IBOutlet weak var doubleCheckButton: UIButton!
     @IBOutlet weak var imgMain: UIImageView!
-    @IBOutlet weak var imgLR: UIImageView!
-    @IBOutlet weak var imgLL: UIImageView!
-
     @IBOutlet var scrollViewController: UIView!
     @IBOutlet weak var picButton: UIButton!
     @IBOutlet weak var mainSwipeRight: UISwipeGestureRecognizer!
     @IBOutlet weak var mainSwipeLeft: UISwipeGestureRecognizer!
-    
     @IBOutlet weak var shareButtonOutlet: UIButton!
-    
+    @IBOutlet weak var swipeUpMain: UISwipeGestureRecognizer!
     
     
     
@@ -69,6 +71,7 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
             
             bs_presentImagePickerController(vc, animated: true,
                 select: { (asset: PHAsset) -> Void in
+                    
                 //if findPhotoKey finds key, knows created and reselected
                 if let reselectedPhotoKey = self.swipe.findPhotoKeyForAsset(asset) {
                         self.photoList.keepPhoto(reselectedPhotoKey, list: .keepers)
@@ -78,21 +81,25 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
                         let newPhotoKey = self.swipe.makePhotoKeyFromPHAsset(asset)
                     self.photoList.keepPhoto(newPhotoKey, list: .keepers)
                     }
+                    
                 }, deselect: { (asset: PHAsset) -> Void in
+                    
                     let photoKeyForAsset = self.swipe.findPhotoKeyForAsset(asset)!
                     self.photoList.keepPhoto(photoKeyForAsset, list: .discards)
+                    
                 }, cancel: { (assets: [PHAsset]) -> Void in
                 }, finish: { (assets: [PHAsset]) -> Void in
+                    
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                                                                                    //might be buggy
                         self.picButton.hidden = true
                         var imageArray = self.swipe.getInitialImages(self.photoList.keepers.count)
-                        self.imgMain.image = imageArray[0] as UIImage!
+//    resize                   let resizedImg = self.swipe.resizeImage(imageArray[0], targetSize: self.imgMain.frame.size)
+                        self.imgMain.image = imageArray[0]
                         self.imgMain.hidden = false
-                        
                         // tells the scroll view to reload data
                         NSNotificationCenter.defaultCenter().postNotificationName(newKeepersNotification, object: self)
                     })
+                    
                 }, completion: nil)
     }
     
@@ -103,30 +110,27 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
     // MARK: - functions
     
     
-    
-    func rotated()
-    {
-        if(UIDeviceOrientationIsLandscape(UIDevice.currentDevice().orientation))
-        {
-            print("landscapefrom vc")
-            performSegueWithIdentifier("landscape", sender: self)
-        }
-        if(UIDeviceOrientationIsPortrait(UIDevice.currentDevice().orientation))
-        {
-            navigationController?.popViewControllerAnimated(false)
-            print("Portrait from vc")
-        }
-    }
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController!.navigationBar.hidden = true //dope  //LANDSCAPRE MODE DOESN"T LIKEY
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "checkMainImage", name: newKeepersNotification, object: nil)
+        self.navigationController!.navigationBar.hidden = true
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "checkImgMain", name: newKeepersNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "rotated", name: UIDeviceOrientationDidChangeNotification, object: nil)
+         NSNotificationCenter.defaultCenter().addObserver(self, selector: "lastPhotoView", name: lastPhoto, object: nil)
+         NSNotificationCenter.defaultCenter().addObserver(self, selector: nil, name: finalPhoto, object: nil)
+        
     }
     
     override func viewWillAppear(animated: Bool) {
+        self.navigationController!.navigationBar.hidden = true
+        
+        //only allow portrait upright!!
+        let value = UIInterfaceOrientation.Portrait.rawValue
+        UIDevice.currentDevice().setValue(value, forKey: "orientation")
+        
+        if photoList.keepers.count == 1 {
+            lastPhotoView()
+            print("ViewWillAppear on 1 photo")
+        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -134,21 +138,61 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
     }
     
     
-    //from delegate protocol for collection view!!!
+    func rotated()
+    {
+        if(UIDeviceOrientationIsLandscape(UIDevice.currentDevice().orientation))
+        {
+            print("landscapefrom vc")
+            if imgMain.image != nil {
+                performSegueWithIdentifier("landscape", sender: self)
+            }
+        }
+        if(UIDeviceOrientationIsPortrait(UIDevice.currentDevice().orientation))
+        {
+            navigationController?.popViewControllerAnimated(false)
+            if photoList.keepers.count == 1 {
+                lastPhotoView()                                 //NOT WORKING
+                print("scroll *should be* removed from vc")
+            }
+        }
+    }
+    
+    func checkImgMain() {
+        if swipe.photoIsIn(imgMain.image!) == .discards {
+            let nextPhoto = photoList.getTotalImages(.keepers)[0]
+            imgMain.image = nextPhoto
+        }
+    }
+
+    //from scrollViewDelegate!!!
     
     func scrollViewSelection(controller: ScrollViewController, image: UIImage) {
         imgMain.image! = image
     }
     
-    func checkMainImage(){
-        var photoKey = swipe.imageToPhotoKey(imgMain.image!)
-    
+    func restoreImagesToKeepers(imageArray: [UIImage]){
+        for image in imageArray{
+            var thePhotoKey = swipe.imageToPhotoKey(image)
+            photoList.keepPhoto(thePhotoKey, list: .keepers)
+            NSNotificationCenter.defaultCenter().postNotificationName(newKeepersNotification, object: self)
+        }
+        print("you happy?")
     }
     
+    func lastPhotoView() {
+        print("lastPhotoView()")
+        self.scrollViewController.removeFromSuperview()
+        imgMain.image = Array(photoList.keepers.values)[0].image
+        imgMain.removeGestureRecognizer(swipeUpMain)
+        shareButtonOutlet.hidden = false
+    }
+    
+    
+    
+    
+    
+    
     //MARK: - SOCIAL FRAMEWORK actionSheet
-    
-    
-    
     
     func shareOptions() {
         let actionSheet = UIAlertController(title: "", message: "Share your Note", preferredStyle: UIAlertControllerStyle.ActionSheet)
@@ -207,41 +251,7 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
     }
     
     
-    // MARK: - Landscape Size Class
-    
 
-    
-//    func application(application: UIApplication, supportedInterfaceOrientationsForWindow window: UIWindow) -> Int {
-//        
-//       // if self.view.window?.rootViewController?.presentedViewController is LandscapeViewController {
-//       //     return Int(UIInterfaceOrientationMask.All.rawValue);
-//       // } else {
-//            return Int(UIInterfaceOrientationMask.Portrait.rawValue);
-//       // }
-//        
-//    }
-    
-
-    
-    
-    override func shouldAutorotate() -> Bool {
-        return false
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
 
     
@@ -251,16 +261,15 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "discards" {
-            segue.destinationViewController as? DiscardsVC
-           // destination!.photoList = self.photoList                   // in favor of the singleton!!!
+            let destination = segue.destinationViewController as? DiscardsVC
+            destination!.delegate = self
         }
         if segue.identifier == "scrollCollectionView" {
-            var destination = segue.destinationViewController as? ScrollViewController
+            let destination = segue.destinationViewController as? ScrollViewController
             destination!.delegate = self
         }
         if segue.identifier == "landscape" {
-            var destination = segue.destinationViewController as? LandscapeViewController
-           // destination!.delegate = self
+            let destination = segue.destinationViewController as? LandscapeViewController
         }
     }
     
@@ -276,11 +285,11 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
     }
     
     @IBAction func swipeUpMain(sender: AnyObject) {
-        if photoList.keepers.count != 1 {
-            //doubleCheck(false)
-            swipe.swipeUpDelete(imgMain)
-        NSNotificationCenter.defaultCenter().postNotificationName(newKeepersNotification, object: self)
+        imgMain.image = swipe.swipeUpDelete(imgMain)
+        if photoList.keepers.count == 1 {
+            NSNotificationCenter.defaultCenter().postNotificationName(lastPhoto, object: self)
         }
+        NSNotificationCenter.defaultCenter().postNotificationName(newKeepersNotification, object: self)
     }
 
     @IBAction func mainSwipeLeft(sender: UISwipeGestureRecognizer) {

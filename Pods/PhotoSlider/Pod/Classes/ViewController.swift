@@ -35,9 +35,10 @@ public class ViewController:UIViewController, UIScrollViewDelegate, PhotoSliderI
     @IBOutlet weak var doubleCheckButton: UIButton!
     @IBOutlet weak var shareButtonOutlet: UIButton!
 
+
     var closeButton:UIButton?
 
-    @IBOutlet var mainSwipeRIght: UISwipeGestureRecognizer!
+
     @IBOutlet var mainSwipeLeft: UISwipeGestureRecognizer!
     @IBOutlet var mainSwipeRight: UISwipeGestureRecognizer!
     var scrollMode:PhotoSliderControllerScrollMode = .None
