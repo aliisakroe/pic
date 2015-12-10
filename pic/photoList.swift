@@ -49,6 +49,14 @@ class PhotoList {
         }
     }
     
+    func clearPhotos(){
+//        for photoKey in allPhotoList {
+//            photoKey.asset = nil
+//        }
+        self.keepers = [:]
+        self.discards = [:]
+    }
+    
     func deletePhoto(photo: PhotoKey) {
         self.keepers[photo.index] = nil
         self.discards[photo.index] = nil

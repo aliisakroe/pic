@@ -266,12 +266,18 @@
                                         </view>
                                         <animations/>
                                         <constraints>
-                                            <constraint firstItem="iMW-Lg-Coc" firstAttribute="leading" secondItem="sIq-eT-lZm" secondAttribute="leadingMargin" id="7Dt-VK-j3H"/>
-                                            <constraint firstAttribute="bottomMargin" secondItem="iMW-Lg-Coc" secondAttribute="bottom" id="d8N-kX-jGq">
-                                                <variation key="widthClass=compact" constant="5"/>
+                                            <constraint firstItem="iMW-Lg-Coc" firstAttribute="leading" secondItem="sIq-eT-lZm" secondAttribute="leadingMargin" id="7Dt-VK-j3H">
+                                                <variation key="widthClass=compact" constant="1"/>
                                             </constraint>
-                                            <constraint firstItem="iMW-Lg-Coc" firstAttribute="top" secondItem="sIq-eT-lZm" secondAttribute="topMargin" id="s8K-DV-DkD"/>
-                                            <constraint firstAttribute="trailingMargin" secondItem="iMW-Lg-Coc" secondAttribute="trailing" id="yA7-xD-PQs"/>
+                                            <constraint firstAttribute="bottomMargin" secondItem="iMW-Lg-Coc" secondAttribute="bottom" id="d8N-kX-jGq">
+                                                <variation key="widthClass=compact" constant="1"/>
+                                            </constraint>
+                                            <constraint firstItem="iMW-Lg-Coc" firstAttribute="top" secondItem="sIq-eT-lZm" secondAttribute="topMargin" id="s8K-DV-DkD">
+                                                <variation key="widthClass=compact" constant="1"/>
+                                            </constraint>
+                                            <constraint firstAttribute="trailingMargin" secondItem="iMW-Lg-Coc" secondAttribute="trailing" id="yA7-xD-PQs">
+                                                <variation key="widthClass=compact" constant="1"/>
+                                            </constraint>
                                         </constraints>
                                         <variation key="default">
                                             <mask key="subviews">
@@ -347,7 +353,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wgT-NS-10Q" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="222" y="-293"/>
+            <point key="canvasLocation" x="276" y="-293"/>
         </scene>
         <!--Landscape View Controller-->
         <scene sceneID="mkR-F4-2hs">
@@ -358,11 +364,28 @@
                         <viewControllerLayoutGuide type="bottom" id="LCQ-o8-lf7"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Scd-JK-DEg">
-                        <rect key="frame" x="0.0" y="0.0" width="400" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="400"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="LcE-mM-1Ue">
-                                <rect key="frame" x="-20" y="-20" width="610" height="356"/>
+                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="QKl-Sd-CMw">
+                                <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                <animations/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="QKl-Sd-CMw" secondAttribute="height" multiplier="27:25" id="Chx-VD-SMT"/>
+                                </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="Chx-VD-SMT"/>
+                                    </mask>
+                                </variation>
+                                <variation key="widthClass=compact">
+                                    <mask key="constraints">
+                                        <include reference="Chx-VD-SMT"/>
+                                    </mask>
+                                </variation>
+                            </imageView>
+                            <stackView opaque="NO" contentMode="scaleAspectFill" ambiguous="YES" misplaced="YES" distribution="fillEqually" alignment="center" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="LcE-mM-1Ue">
+                                <rect key="frame" x="-20" y="-20" width="612" height="356"/>
                                 <subviews>
                                     <imageView multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="74S-id-JwB">
                                         <rect key="frame" x="0.0" y="0.0" width="305" height="356"/>
@@ -370,15 +393,18 @@
                                         <gestureRecognizers/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="74S-id-JwB" secondAttribute="height" multiplier="3:10" id="8q1-BO-hTT"/>
+                                            <constraint firstAttribute="width" secondItem="74S-id-JwB" secondAttribute="height" multiplier="7:8" id="MAt-Vs-ebE"/>
                                         </constraints>
                                         <variation key="default">
                                             <mask key="constraints">
                                                 <exclude reference="8q1-BO-hTT"/>
+                                                <exclude reference="MAt-Vs-ebE"/>
                                             </mask>
                                         </variation>
                                         <variation key="widthClass=compact">
                                             <mask key="constraints">
                                                 <include reference="8q1-BO-hTT"/>
+                                                <include reference="MAt-Vs-ebE"/>
                                             </mask>
                                         </variation>
                                         <connections>
@@ -388,20 +414,23 @@
                                         </connections>
                                     </imageView>
                                     <imageView multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xkE-t5-IEw">
-                                        <rect key="frame" x="305" y="0.0" width="305" height="356"/>
+                                        <rect key="frame" x="307" y="0.0" width="305" height="356"/>
                                         <animations/>
                                         <gestureRecognizers/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="xkE-t5-IEw" secondAttribute="height" multiplier="3:10" id="KoI-3o-RJN"/>
+                                            <constraint firstAttribute="width" secondItem="xkE-t5-IEw" secondAttribute="height" multiplier="7:8" id="p1X-UE-FTt"/>
                                         </constraints>
                                         <variation key="default">
                                             <mask key="constraints">
                                                 <exclude reference="KoI-3o-RJN"/>
+                                                <exclude reference="p1X-UE-FTt"/>
                                             </mask>
                                         </variation>
                                         <variation key="widthClass=compact">
                                             <mask key="constraints">
                                                 <include reference="KoI-3o-RJN"/>
+                                                <include reference="p1X-UE-FTt"/>
                                             </mask>
                                         </variation>
                                         <connections>
@@ -417,35 +446,67 @@
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailingMargin" secondItem="LcE-mM-1Ue" secondAttribute="trailing" id="38I-fJ-GIr"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="LcE-mM-1Ue" secondAttribute="trailing" id="38I-fJ-GIr">
+                                <variation key="widthClass=compact" constant="0.0"/>
+                            </constraint>
+                            <constraint firstItem="QKl-Sd-CMw" firstAttribute="centerX" secondItem="Scd-JK-DEg" secondAttribute="centerX" id="5bE-B8-Zym"/>
+                            <constraint firstItem="QKl-Sd-CMw" firstAttribute="top" secondItem="Scd-JK-DEg" secondAttribute="topMargin" id="6Zl-F1-i5K"/>
+                            <constraint firstItem="QKl-Sd-CMw" firstAttribute="leading" secondItem="Scd-JK-DEg" secondAttribute="leadingMargin" constant="60" id="6a9-8b-uO7"/>
+                            <constraint firstItem="QKl-Sd-CMw" firstAttribute="centerY" secondItem="Scd-JK-DEg" secondAttribute="centerY" id="KnS-1U-tcs"/>
+                            <constraint firstItem="LCQ-o8-lf7" firstAttribute="top" secondItem="QKl-Sd-CMw" secondAttribute="bottom" id="Rio-bW-bBi"/>
                             <constraint firstItem="LcE-mM-1Ue" firstAttribute="leading" secondItem="Scd-JK-DEg" secondAttribute="leadingMargin" id="cef-B0-3bA"/>
-                            <constraint firstAttribute="bottomMargin" secondItem="LcE-mM-1Ue" secondAttribute="bottom" id="f4A-4R-E7S"/>
-                            <constraint firstItem="LcE-mM-1Ue" firstAttribute="top" secondItem="Scd-JK-DEg" secondAttribute="topMargin" id="w9f-dQ-w3S"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="LcE-mM-1Ue" secondAttribute="bottom" id="f4A-4R-E7S">
+                                <variation key="widthClass=compact" constant="40"/>
+                            </constraint>
+                            <constraint firstAttribute="trailingMargin" secondItem="QKl-Sd-CMw" secondAttribute="trailing" constant="60" id="mL1-0F-6SE"/>
+                            <constraint firstItem="LcE-mM-1Ue" firstAttribute="top" secondItem="Scd-JK-DEg" secondAttribute="topMargin" id="w9f-dQ-w3S">
+                                <variation key="widthClass=compact" constant="40"/>
+                            </constraint>
                         </constraints>
                         <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="QKl-Sd-CMw"/>
+                            </mask>
                             <mask key="constraints">
+                                <exclude reference="5bE-B8-Zym"/>
+                                <exclude reference="6Zl-F1-i5K"/>
+                                <exclude reference="6a9-8b-uO7"/>
+                                <exclude reference="KnS-1U-tcs"/>
+                                <exclude reference="mL1-0F-6SE"/>
                                 <exclude reference="38I-fJ-GIr"/>
                                 <exclude reference="cef-B0-3bA"/>
                                 <exclude reference="f4A-4R-E7S"/>
                                 <exclude reference="w9f-dQ-w3S"/>
+                                <exclude reference="Rio-bW-bBi"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
+                            <mask key="subviews">
+                                <include reference="QKl-Sd-CMw"/>
+                            </mask>
                             <mask key="constraints">
+                                <exclude reference="5bE-B8-Zym"/>
+                                <include reference="6Zl-F1-i5K"/>
+                                <include reference="6a9-8b-uO7"/>
+                                <exclude reference="KnS-1U-tcs"/>
+                                <include reference="mL1-0F-6SE"/>
                                 <include reference="38I-fJ-GIr"/>
                                 <include reference="cef-B0-3bA"/>
                                 <include reference="f4A-4R-E7S"/>
                                 <include reference="w9f-dQ-w3S"/>
+                                <include reference="Rio-bW-bBi"/>
                             </mask>
                         </variation>
                     </view>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="400" height="600"/>
+                    <size key="freeformSize" width="600" height="400"/>
                     <connections>
+                        <outlet property="lastImageView" destination="QKl-Sd-CMw" id="Lrg-Lv-ana"/>
                         <outlet property="leftImage" destination="74S-id-JwB" id="EHh-8e-bkn"/>
                         <outlet property="leftSwipeUp" destination="ufW-8F-M7T" id="Rqa-RT-bNl"/>
                         <outlet property="rightImage" destination="xkE-t5-IEw" id="Fxm-zB-D04"/>
                         <outlet property="rightSwipeUp" destination="kl1-mV-3yd" id="082-bt-rLB"/>
+                        <outlet property="stackView" destination="LcE-mM-1Ue" id="mn6-qY-8Bj"/>
                         <outlet property="swipeLonL" destination="yWw-Tj-aVQ" id="4f8-Gt-sre"/>
                         <outlet property="swipeLonR" destination="pyF-QM-ZoI" id="UHL-Eb-ThL"/>
                         <outlet property="swipeRonL" destination="SSx-Ql-g86" id="YUL-UB-1V8"/>
@@ -484,7 +545,7 @@
                     </connections>
                 </swipeGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="966" y="-139"/>
+            <point key="canvasLocation" x="1116" y="-152"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="cxn-LR-4fs">
@@ -509,7 +570,13 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GsH-iF-04e">
                                 <rect key="frame" x="112" y="433" width="90" height="30"/>
                                 <animations/>
-                                <state key="normal" title="Pic!"/>
+                                <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="23"/>
+                                <state key="normal" title="Pic!">
+                                    <color key="titleColor" red="1" green="0.63761828563926048" blue="0.0016834623899757428" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <variation key="widthClass=compact" misplaced="YES">
+                                    <rect key="frame" x="170" y="209" width="60" height="90"/>
+                                </variation>
                                 <connections>
                                     <action selector="imagePicker:" destination="USs-NR-tp8" eventType="touchUpInside" id="H5c-hC-cHR"/>
                                 </connections>
@@ -548,6 +615,17 @@
                                     <outletCollection property="gestureRecognizers" destination="EZk-mq-T6M" appends="YES" id="4iO-al-73u"/>
                                 </connections>
                             </imageView>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u0k-0m-igp">
+                                <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                <animations/>
+                                <state key="normal" title="pic! again :)"/>
+                                <variation key="widthClass=compact" fixedFrame="YES">
+                                    <rect key="frame" x="160" y="429" width="80" height="30"/>
+                                </variation>
+                                <connections>
+                                    <action selector="picAgainButton:" destination="USs-NR-tp8" eventType="touchUpInside" id="uFP-0M-i8k"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -566,6 +644,9 @@
                                 <variation key="widthClass=compact" constant="90"/>
                             </constraint>
                             <constraint firstItem="GsH-iF-04e" firstAttribute="centerY" secondItem="LBg-2b-FKK" secondAttribute="centerY" id="uAs-1H-uKN"/>
+                            <constraint firstItem="GsH-iF-04e" firstAttribute="top" secondItem="teQ-bq-mBR" secondAttribute="bottom" constant="200" id="znx-x7-N8g">
+                                <variation key="widthClass=compact" constant="170"/>
+                            </constraint>
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
@@ -573,6 +654,7 @@
                                 <exclude reference="GsH-iF-04e"/>
                                 <exclude reference="Wo2-tQ-Rtv"/>
                                 <exclude reference="AUI-eB-noy"/>
+                                <exclude reference="u0k-0m-igp"/>
                             </mask>
                             <mask key="constraints">
                                 <exclude reference="tkk-id-Wyu"/>
@@ -582,6 +664,7 @@
                                 <exclude reference="fnP-hy-3B5"/>
                                 <exclude reference="M0w-uD-Wue"/>
                                 <exclude reference="uAs-1H-uKN"/>
+                                <exclude reference="znx-x7-N8g"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
@@ -590,6 +673,7 @@
                                 <include reference="GsH-iF-04e"/>
                                 <include reference="Wo2-tQ-Rtv"/>
                                 <include reference="AUI-eB-noy"/>
+                                <include reference="u0k-0m-igp"/>
                             </mask>
                             <mask key="constraints">
                                 <include reference="tkk-id-Wyu"/>
@@ -598,7 +682,8 @@
                                 <include reference="Sj8-be-asI"/>
                                 <include reference="fnP-hy-3B5"/>
                                 <include reference="M0w-uD-Wue"/>
-                                <include reference="uAs-1H-uKN"/>
+                                <exclude reference="uAs-1H-uKN"/>
+                                <include reference="znx-x7-N8g"/>
                             </mask>
                         </variation>
                         <connections>
@@ -611,6 +696,7 @@
                         <outlet property="imgMain" destination="AUI-eB-noy" id="2bZ-bD-ZS0"/>
                         <outlet property="mainSwipeLeft" destination="OdS-1a-Ukp" id="7rz-wp-5kS"/>
                         <outlet property="mainSwipeRight" destination="Ngd-QS-bdi" id="ew6-Ry-5xY"/>
+                        <outlet property="picAgainButton" destination="u0k-0m-igp" id="UET-d0-adb"/>
                         <outlet property="picButton" destination="GsH-iF-04e" id="iwl-1r-eqp"/>
                         <outlet property="scrollViewController" destination="Wo2-tQ-Rtv" id="Mlq-1y-Fh6"/>
                         <outlet property="shareButtonOutlet" destination="MCa-7F-pSB" id="H0W-jB-Y5A"/>

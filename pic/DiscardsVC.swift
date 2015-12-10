@@ -25,6 +25,11 @@ class DiscardsVC: UIViewController, UICollectionViewDataSource, UICollectionView
     var selectedImages = [PhotoKey]()
     
     
+    
+    
+    
+    //Mark: - Functions
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.collectionView.allowsMultipleSelection = true
@@ -49,7 +54,8 @@ class DiscardsVC: UIViewController, UICollectionViewDataSource, UICollectionView
         return photoList.discards.count
     }
     
-     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! CollectionViewCell 
         dispatch_async(dispatch_get_main_queue(), {
             let photoIndex = self.photoList.sortedListOfPhotoIndices(.discards)[indexPath.row]
@@ -68,7 +74,6 @@ class DiscardsVC: UIViewController, UICollectionViewDataSource, UICollectionView
         return cell
     }
     
-
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath){
         let selectedCell = self.collectionView.cellForItemAtIndexPath(indexPath) as! CollectionViewCell
@@ -83,11 +88,11 @@ class DiscardsVC: UIViewController, UICollectionViewDataSource, UICollectionView
         }
     }
     
+    
     func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath){
         let selectedCell = self.collectionView.cellForItemAtIndexPath(indexPath) as! CollectionViewCell
         selectedCell.checkIcon.hidden = true
         let photoIndex =  self.photoList.sortedListOfPhotoIndices(.discards)[indexPath.row]
-        let thePhotoKey = self.photoList.keepers[photoIndex]
         for i in 0 ..< selectedImages.count {
             if selectedImages[i].index == photoIndex {                                      //BUGGY dispatch????
                 selectedImages.removeAtIndex(i)
@@ -98,6 +103,34 @@ class DiscardsVC: UIViewController, UICollectionViewDataSource, UICollectionView
             undoButton.enabled = false
         }
     }
+    
+    
+    func deleteFromPhone() {
+        var assetsToDelete = [PHAsset]()
+        var photoKeyArray = [PhotoKey]()
+        PHPhotoLibrary.sharedPhotoLibrary().performChanges( {
+            for thePhotoKey in self.selectedImages{
+                assetsToDelete.append(thePhotoKey.asset)
+                photoKeyArray.append(thePhotoKey)
+            }
+            PHAssetChangeRequest.deleteAssets(assetsToDelete)
+            },
+            completionHandler: { success, error in
+                NSLog("Finished deleting asset. %@",  (success ? "Success" : error!))
+                if success {
+                    for thePhotoKey in photoKeyArray{
+                        self.photoList.deletePhoto(thePhotoKey)
+                        self.collectionView.reloadData()
+                    }
+                }
+        })
+    }
+    
+    
+    
+    
+    
+    //Mark: - IBAction
     
     @IBAction func backUndo(sender: AnyObject) {
         if (delegate != nil) {
@@ -111,29 +144,18 @@ class DiscardsVC: UIViewController, UICollectionViewDataSource, UICollectionView
         deleteFromPhone()
     }
     
-    
-    func deleteFromPhone() {
-       var assetsToDelete = [PHAsset]()
-        var photoKeyArray = [PhotoKey]()
-            PHPhotoLibrary.sharedPhotoLibrary().performChanges( {
-                for thePhotoKey in self.selectedImages{
-                    assetsToDelete.append(thePhotoKey.asset)
-                    photoKeyArray.append(thePhotoKey)
-                }
-                PHAssetChangeRequest.deleteAssets(assetsToDelete)
-                },
-                completionHandler: { success, error in
-                    NSLog("Finished deleting asset. %@",  (success ? "Success" : error!))
-                    if success {
-                        for thePhotoKey in photoKeyArray{
-                            self.photoList.deletePhoto(thePhotoKey)
-                            self.collectionView.reloadData()
-                        }
-                    }
-            })
-    }
-    
     @IBAction func swipeBack(sender: AnyObject) {
         navigationController?.popViewControllerAnimated(true)
     }
+    
+    
+    
+    
+    
+    
+   //end
 }
+
+
+
+

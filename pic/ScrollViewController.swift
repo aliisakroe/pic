@@ -14,9 +14,12 @@ class ScrollViewController: UIViewController, UICollectionViewDataSource, UIColl
 
     @IBOutlet weak var collectionView: UICollectionView!
 
-    
     var photoList = PhotoList.sharedInstance
     var delegate:ScrollViewControllerDelegate? = nil
+    
+    
+    
+    //Mark: - Functions
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,9 +27,7 @@ class ScrollViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     
     func reloadCollectionView(){
-        print("reloadCollectionView")
         dispatch_async(dispatch_get_main_queue(), { self.collectionView.reloadData() })
-
     }
     
     override func didReceiveMemoryWarning() {
@@ -34,7 +35,6 @@ class ScrollViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        print(photoList.keepers.count)
         return 1
     }
     
@@ -47,7 +47,7 @@ class ScrollViewController: UIViewController, UICollectionViewDataSource, UIColl
         dispatch_async(dispatch_get_main_queue(), {
             let manager = PHImageManager.defaultManager()
             let photoIndex =  self.photoList.sortedListOfPhotoIndices(.keepers)[indexPath.row]
-            var photoKey = self.photoList.keepers[photoIndex]!
+            let photoKey = self.photoList.keepers[photoIndex]!
             manager.requestImageForAsset(photoKey.asset,
                 targetSize: CGSizeMake(4000.0, 4000.0),
                 contentMode: .AspectFill ,
@@ -59,21 +59,16 @@ class ScrollViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        let selectedCell = self.collectionView.cellForItemAtIndexPath(indexPath) as! CollectionViewCell
+        selectedCell.highlighted = true
         let photoIndex =  self.photoList.sortedListOfPhotoIndices(.keepers)[indexPath.row]
-        var photoKey = self.photoList.allPhotoList[photoIndex]!
+        let photoKey = self.photoList.allPhotoList[photoIndex]!
         if (self.delegate != nil) {
             self.delegate!.scrollViewSelection(self, selectedPhotoKey: photoKey)
         }
     }
     
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+    
+    
+    //end
 }

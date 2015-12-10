@@ -20,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 //    func application(app: UIApplication, openURL url: NSURL, options: [String : AnyObject]) -> Bool {
-//        return FBSDKApplicationDelegate.sharedInstance().application(UIApplication.sharedApplication(), openURL: url, sourceApplication: UIApplication.sourceApplication, annotation: UIApplication.annotation)
+//        return FBSDKApplicationDelegate.sharedInstance().application(UIApplication.sharedApplication(), openURL: url, sourceApplication: sourceApplication, annotation: annotation)
 //    }
     
     
@@ -46,20 +46,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
-//    func rotated()
-//    {
-//        if(UIDeviceOrientationIsLandscape(UIDevice.currentDevice().orientation))
-//        {
-//            print("landscape")
-//            self.window?.makeKeyAndVisible()
-//        }
-//        
-//        if(UIDeviceOrientationIsPortrait(UIDevice.currentDevice().orientation))
-//        {
-//            print("Portrait")
-//        }
-//        
-//    }
-
+    
+    
+    
+    //end
 }
 

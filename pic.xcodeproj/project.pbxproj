@@ -13,7 +13,6 @@
 		6457DE361C194D5B00614692 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6457DE351C194D5B00614692 /* FBSDKCoreKit.framework */; };
 		647587E51C14B779001B2714 /* LandscapeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647587E41C14B779001B2714 /* LandscapeViewController.swift */; };
 		647587E91C153456001B2714 /* swipes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647587E81C153456001B2714 /* swipes.swift */; };
-		647587ED1C155C40001B2714 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647587EC1C155C40001B2714 /* NavigationController.swift */; };
 		6477BA4C1C0E8451003C758C /* photoList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6477BA4B1C0E8451003C758C /* photoList.swift */; };
 		6477BA4E1C0F896B003C758C /* testFuncs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6477BA4D1C0F896B003C758C /* testFuncs.swift */; };
 		6483224A1C0BDC230069C487 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 648322491C0BDC230069C487 /* Photos.framework */; };
@@ -22,7 +21,6 @@
 		64C7B5421C11F8900079052E /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C7B5411C11F8900079052E /* CollectionViewCell.swift */; };
 		64C7B5441C1205D70079052E /* DiscardsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C7B5431C1205D70079052E /* DiscardsVC.swift */; };
 		64C7B54B1C1363C50079052E /* ScrollViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C7B54A1C1363C50079052E /* ScrollViewController.swift */; };
-		64C87B611C17ABBC001FFB26 /* ios8_check_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 64C87B601C17ABBC001FFB26 /* ios8_check_icon.png */; };
 		64CF3C561C0B873800CD1D57 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64CF3C551C0B873800CD1D57 /* AppDelegate.swift */; };
 		64CF3C581C0B873800CD1D57 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64CF3C571C0B873800CD1D57 /* ViewController.swift */; };
 		64CF3C5B1C0B873800CD1D57 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 64CF3C591C0B873800CD1D57 /* Main.storyboard */; };
@@ -57,7 +55,6 @@
 		6457DE351C194D5B00614692 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		647587E41C14B779001B2714 /* LandscapeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LandscapeViewController.swift; sourceTree = "<group>"; };
 		647587E81C153456001B2714 /* swipes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = swipes.swift; sourceTree = "<group>"; };
-		647587EC1C155C40001B2714 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
 		6477BA4B1C0E8451003C758C /* photoList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = photoList.swift; sourceTree = "<group>"; };
 		6477BA4D1C0F896B003C758C /* testFuncs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = testFuncs.swift; sourceTree = "<group>"; };
 		648322491C0BDC230069C487 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
@@ -66,7 +63,6 @@
 		64C7B5411C11F8900079052E /* CollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		64C7B5431C1205D70079052E /* DiscardsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscardsVC.swift; sourceTree = "<group>"; };
 		64C7B54A1C1363C50079052E /* ScrollViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollViewController.swift; sourceTree = "<group>"; };
-		64C87B601C17ABBC001FFB26 /* ios8_check_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ios8_check_icon.png; sourceTree = "<group>"; };
 		64CF3C521C0B873800CD1D57 /* pic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = pic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		64CF3C551C0B873800CD1D57 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		64CF3C571C0B873800CD1D57 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -137,7 +133,6 @@
 		64C7B5471C133BC90079052E /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				647587EC1C155C40001B2714 /* NavigationController.swift */,
 				64CF3C571C0B873800CD1D57 /* ViewController.swift */,
 				64C7B54A1C1363C50079052E /* ScrollViewController.swift */,
 				647587E41C14B779001B2714 /* LandscapeViewController.swift */,
@@ -176,7 +171,6 @@
 				64C7B5451C12B17C0079052E /* Model */,
 				64C7B5461C133B9D0079052E /* View */,
 				64C7B5471C133BC90079052E /* Controller */,
-				64C87B601C17ABBC001FFB26 /* ios8_check_icon.png */,
 				64CF3C5E1C0B873800CD1D57 /* LaunchScreen.storyboard */,
 				64CF3C611C0B873800CD1D57 /* Info.plist */,
 			);
@@ -334,7 +328,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				64CF3C601C0B873800CD1D57 /* LaunchScreen.storyboard in Resources */,
-				64C87B611C17ABBC001FFB26 /* ios8_check_icon.png in Resources */,
 				64CF3C5D1C0B873800CD1D57 /* Assets.xcassets in Resources */,
 				64CF3C5B1C0B873800CD1D57 /* Main.storyboard in Resources */,
 			);
@@ -409,7 +402,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				647587ED1C155C40001B2714 /* NavigationController.swift in Sources */,
 				64C7B5441C1205D70079052E /* DiscardsVC.swift in Sources */,
 				647587E51C14B779001B2714 /* LandscapeViewController.swift in Sources */,
 				6477BA4C1C0E8451003C758C /* photoList.swift in Sources */,

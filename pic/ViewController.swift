@@ -9,20 +9,14 @@
 import UIKit
 import BSImagePicker
 import Photos
-import Social
 import FBSDKCoreKit
 import FBSDKLoginKit
+import FBSDKShareKit
 
 /** to do
 - app icon
 - app loadscreen
--final image, then restore one from discards to keepers...
-- add swipe back gesture to discards
-- social
-*/
-/* ask
-- error mesage for collection view
-- singleton okay?
+- clear BSImagePicker
 */
 
 
@@ -50,8 +44,9 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
     let effectView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.Light))
     let secondPhoto = UIImageView()
     var currentImgMainPhotoKey : PhotoKey?
+    var logInButton = FBSDKLoginButton()
     
-    @IBOutlet weak var doubleCheckButton: UIButton!
+    @IBOutlet weak var picAgainButton: UIButton!
     @IBOutlet weak var imgMain: UIImageView!
     @IBOutlet var scrollViewController: UIView!
     @IBOutlet weak var picButton: UIButton!
@@ -62,7 +57,12 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
     
     
     
-    // MARK: - BSImageSelector updates most of what viewDidLoad would
+    
+    
+    
+    
+    
+    // MARK: - BSImageSelector loads UI most of what viewDidLoad would--look in finish: closure
     
     @IBAction func imagePicker(sender: AnyObject) {
 
@@ -92,20 +92,24 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
                     
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         self.picButton.hidden = true
-                      //  var imageArray = self.swipe.getInitialImages(self.photoList.keepers.count)
-//    resize                   let resizedImg = self.swipe.resizeImage(imageArray[0], targetSize: self.imgMain.frame.size)
-                        
-                        let manager = PHImageManager.defaultManager()
-                        var firstPhotoKey = Array(self.photoList.keepers.values)[0]
+                        let firstPhotoKey = Array(self.photoList.keepers.values)[0]
                         self.currentImgMainPhotoKey = firstPhotoKey
                         self.setImg(self.imgMain, asset: firstPhotoKey.asset)
                         self.imgMain.hidden = false
+                        self.imgMain.addGestureRecognizer(self.swipeUpMain)
+                        
                         // tells the scroll view to reload data
                         NSNotificationCenter.defaultCenter().postNotificationName(newKeepersNotification, object: self)
                     })
                     
-                }, completion: nil)
+                }, completion: nil )
     }
+    
+    
+    
+    
+    
+    
     
     
     // MARK: - functions
@@ -114,21 +118,16 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if FBSDKAccessToken.currentAccessToken() == nil {
-            print("Not logged in...")
-        } else {
-            print("Logged in!")
-        }
-        
-        var logInButton = FBSDKLoginButton()
         logInButton.readPermissions = ["public_profile", "email", "user_friends"]
         logInButton.center = self.view.center
         logInButton.delegate = self
         
-       // self.view.addSubview(logInButton)
-        
-        
-        
+        if FBSDKAccessToken.currentAccessToken() == nil {
+            print("Not logged in...")
+            //self.view.addSubview(logInButton)
+        } else {
+            print("Logged in!")
+        }
         
         self.navigationController!.navigationBar.hidden = true
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "checkImgMain", name: newKeepersNotification, object: nil)
@@ -137,6 +136,8 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
          NSNotificationCenter.defaultCenter().addObserver(self, selector: nil, name: finalPhoto, object: nil)
         
     }
+    
+    
     
     override func viewWillAppear(animated: Bool) {
         self.navigationController!.navigationBar.hidden = true
@@ -153,6 +154,8 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
+    
+    
     
     
     func rotated()
@@ -172,50 +175,61 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
         }
     }
     
+    
+    //called from newKeepers notification to see if main image was deleted in another viewcontroller
     func checkImgMain() {
-        var currentPhotoKey = self.currentImgMainPhotoKey!
+        if let currentPhotoKey = self.currentImgMainPhotoKey {
         if swipe.photoIsIn(currentPhotoKey) == .discards {
-            print("i will never let go")
-            let index = photoList.sortedListOfPhotoIndices(.keepers)[0]
+            let index = photoList.sortedListOfPhotoIndices(.keepers).last!
             let photoKey =  photoList.keepers[index]
             setImg(imgMain, asset: photoKey!.asset)
-            print("SET FROM CHECKIMGMAIN NEW KEEPERS NOTIFICATION")
+        }
+        } else {
+            imgMain.hidden = true
         }
     }
-
-    //from scrollViewDelegate!!!
     
+    
+    
+
+    //from scrollViewDelegate to set selected photo
     func scrollViewSelection(controller: ScrollViewController, selectedPhotoKey: PhotoKey) {
         self.setImg(imgMain, asset: selectedPhotoKey.asset)
     }
     
+    
+    //from discards delegate to undo selected deleted photos
     func restoreImagesToKeepers(photoKeyArray: [PhotoKey]){
         for thePhotoKey in photoKeyArray{
             photoList.keepPhoto(thePhotoKey, list: .keepers)
             NSNotificationCenter.defaultCenter().postNotificationName(newKeepersNotification, object: self)
             self.scrollViewController.hidden = false
+            self.picAgainButton.hidden = true
             shareButtonOutlet.hidden = true
             imgMain.addGestureRecognizer(swipeUpMain)
         }
     }
     
+    
+    //called from lastPhoto notification, adds share button and removes collection view
     func lastPhotoView() {
-        print("lastPhotoView()")
+       // picAgainButton.hidden = false
         self.scrollViewController.hidden = true
+        self.shareButtonOutlet.hidden = false
         let index = photoList.sortedListOfPhotoIndices(.keepers)[0]
         let lastPhotoKey = photoList.keepers[index]
         setImg(imgMain, asset: lastPhotoKey!.asset) //sets first here
-        
         imgMain.removeGestureRecognizer(swipeUpMain)
-        shareButtonOutlet.hidden = false
+
     }
+    
     
     //MARK: - Facebook Login
     
     func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
         if error ==  nil {
             print("Login complete.")
-            self.picButton.enabled = true
+             self.logInButton.hidden = true
         } else {
             print(error.localizedDescription)
         }
@@ -230,66 +244,29 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
     
     //MARK: - SOCIAL FRAMEWORK actionSheet
     
-    func shareOptions() {
-        let actionSheet = UIAlertController(title: "", message: "Share your Note", preferredStyle: UIAlertControllerStyle.ActionSheet)
 
-        let tweetAction = UIAlertAction(title: "Share on Twitter", style: UIAlertActionStyle.Default) { (action) -> Void in
-                // Check if sharing to Twitter is possible.
-                if SLComposeViewController.isAvailableForServiceType(SLServiceTypeTwitter) {
-                    // Initialize the default view controller for sharing the post.
-                    let twitterComposeVC = SLComposeViewController(forServiceType: SLServiceTypeTwitter)
-                    
-                    // Set the note text as the default post message.
-                    self.presentViewController(twitterComposeVC, animated: true, completion: nil)
-            }
-                else {
-                    //self.showAlertMessage("You are not logged in to your Twitter account.")
-            }
-        }
     
-        // Configure a new action to share on Facebook.
-        let facebookPostAction = UIAlertAction(title: "Share on Facebook", style: UIAlertActionStyle.Default) { (action) -> Void in
-                if SLComposeViewController.isAvailableForServiceType(SLServiceTypeFacebook) {
-                    let facebookComposeVC = SLComposeViewController(forServiceType: SLServiceTypeFacebook)
+    func share(){
+        
+        PHImageManager.defaultManager().requestImageDataForAsset(currentImgMainPhotoKey!.asset, options: PHImageRequestOptions(), resultHandler:
+            {
+                (imagedata, dataUTI, orientation, info) in
+                if info!.keys.contains(NSString(string: "PHImageFileURLKey")){
                     
-                    facebookComposeVC.setInitialText("MY FOTO MAKE U SO JELLY")
-                    
-                    self.presentViewController(facebookComposeVC, animated: true, completion: nil)
+                    let someText:String =  "Check out my photo!"
+                    let pathURL = info![NSString(string: "PHImageFileURLKey")] as! NSURL
+                    print(pathURL)
+                    let activityViewController = UIActivityViewController(
+                        activityItems: [someText, pathURL],
+                        applicationActivities: nil)
+                    self.navigationController?.presentViewController(activityViewController,
+                        animated: true,
+                        completion: nil)
                 }
-                else {
-                    self.showAlertMessage("You are not connected to your Facebook account.")
-            }
-        }
-        
-        // Configure a new action to show the UIActivityViewController
-       /* let moreAction = UIAlertAction(title: "More", style: UIAlertActionStyle.Default) { (action) -> Void in
-            let activityViewController = UIActivityViewController(activityItems: [self.imgMain.image!], applicationActivities: nil)
-            
-            self.presentViewController(activityViewController, animated: true, completion: nil)
-        }*/
-        
-        let dismissAction = UIAlertAction(title: "Close", style: UIAlertActionStyle.Cancel) { (action) -> Void in
-            
-        }
-        
-        actionSheet.addAction(tweetAction)
-        actionSheet.addAction(facebookPostAction)
-        //actionSheet.addAction(moreAction)
-        actionSheet.addAction(dismissAction)
-        
-        presentViewController(actionSheet, animated: true, completion: nil)
-    }
-    
-    func showAlertMessage(message: String!) {
-        let alertController = UIAlertController(title: "EasyShare", message: message, preferredStyle: UIAlertControllerStyle.Alert)
-        alertController.addAction(UIAlertAction(title: "Okay", style: UIAlertActionStyle.Default, handler: nil))
-        presentViewController(alertController, animated: true, completion: nil)
+        })
     }
     
     
-
-    
-
     
     //MARK: - Navigation
     
@@ -306,6 +283,7 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
         }
         if segue.identifier == "landscape" {
             let destination = segue.destinationViewController as? LandscapeViewController
+            destination?.leftPhotoKey = currentImgMainPhotoKey!
         }
     }
     
@@ -322,13 +300,25 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
         performSegueWithIdentifier("discards", sender: gesture)
     }
     
+    func getImg(photoKey: PhotoKey) -> UIImage? {
+        let manager = PHImageManager.defaultManager()
+        manager.requestImageForAsset(photoKey.asset,
+            targetSize: CGSizeMake(4000.0, 4000.0),
+            contentMode: .AspectFill ,
+            options: nil) { (result, _) in
+                return result!
+        }
+        return nil
+    }
+    
+    
     func setImg(imageView: UIImageView, asset: PHAsset) {
         let manager = PHImageManager.defaultManager()
         manager.requestImageForAsset(asset,
             targetSize: CGSizeMake(4000.0, 4000.0),
             contentMode: .AspectFill ,
             options: nil) { (result, _) in
-                var imageForPhoto = result!
+                let imageForPhoto = result!
                 imageView.image = imageForPhoto
         }
         if imageView == imgMain {
@@ -337,8 +327,7 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
     }
     
     func swipeAndSetPhoto(imageView: UIImageView, direction: Swipe.direction) {
-        print("swipe and set photo()")
-        var nextPhotoKey = swipe.getNextPhotoKey(self.currentImgMainPhotoKey!, direction: direction)
+        let nextPhotoKey = swipe.getNextPhotoKey(self.currentImgMainPhotoKey!, direction: direction)
         setImg(imageView, asset: nextPhotoKey.asset)
     }
     
@@ -355,10 +344,7 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
     }
     
     @IBAction func swipeUpMain(sender: AnyObject) {
-        print("swipe up main")
-        let newPhotoKey = swipe.swipeUpDelete(imgMain, currentPhotoKey: self.currentImgMainPhotoKey!)
-        print(swipe.photoIsIn(self.currentImgMainPhotoKey!))
-        print(swipe.isSameAsset(newPhotoKey.asset, asset2: self.currentImgMainPhotoKey!.asset))
+        swipe.swipeUpDelete(imgMain, currentPhotoKey: self.currentImgMainPhotoKey!)
         if photoList.keepers.count == 1 {
             NSNotificationCenter.defaultCenter().postNotificationName(lastPhoto, object: self)
         } else {
@@ -377,11 +363,20 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
          swipeAndSetPhoto(imgMain, direction: .right)
         }
     }
-
+    
+    
     @IBAction func shareButtonAction(sender: AnyObject) {
-        shareOptions()
+        share()
     }
     
+    @IBAction func picAgainButton(sender: AnyObject) {
+        self.photoList.clearPhotos()
+        currentImgMainPhotoKey = nil
+        NSNotificationCenter.defaultCenter().postNotificationName(newKeepersNotification, object: self)
+        picButton.hidden = false
+        self.scrollViewController.hidden = false
+        picAgainButton.hidden = true
+    }
     
     //end
 }

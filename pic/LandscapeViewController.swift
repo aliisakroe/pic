@@ -13,9 +13,11 @@ import Photos
 class LandscapeViewController: UIViewController {
 
 
+    @IBOutlet weak var lastImageView: UIImageView!
     @IBOutlet weak var rightSwipeUp: UISwipeGestureRecognizer!
     @IBOutlet weak var leftSwipeUp: UISwipeGestureRecognizer!
     @IBOutlet weak var swipeRonR: UISwipeGestureRecognizer!
+    @IBOutlet weak var stackView: UIStackView!
     @IBOutlet weak var swipeRonL: UISwipeGestureRecognizer!
     @IBOutlet weak var swipeLonL: UISwipeGestureRecognizer!
     @IBOutlet weak var swipeLonR: UISwipeGestureRecognizer!
@@ -25,6 +27,10 @@ class LandscapeViewController: UIViewController {
     var rightPhotoKey : PhotoKey?
     var leftPhotoKey : PhotoKey?
     
+    
+    
+    //Mark: - Functions
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         NSNotificationCenter.defaultCenter().addObserver(self, selector: nil, name: newKeepersNotification, object: nil)
@@ -32,12 +38,11 @@ class LandscapeViewController: UIViewController {
         if photoList.keepers.count == 1 {
             lastPhotoFunc()
         } else {
+        setImg(leftImage, photoKey: leftPhotoKey!)
         let photoIndex = photoList.sortedListOfPhotoIndices(.keepers)[0]
-        let photoKey = photoList.keepers[photoIndex]!
+        var photoKey = photoList.keepers[photoIndex]!
+        photoKey = swipe.differentPhoto(photoKey, otherPhotoKey: leftPhotoKey!, direction: .right)!
         setImg(rightImage, photoKey: photoKey)
-        let photoIndex2 = photoList.sortedListOfPhotoIndices(.keepers)[1]
-        let photoKey2 = photoList.keepers[photoIndex2]!
-        setImg(leftImage, photoKey: photoKey2)
         }
     }
     
@@ -51,20 +56,15 @@ class LandscapeViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-//    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-//        print("landscapper")
-//         return UIInterfaceOrientationMask.Landscape
-//    }
 
     func lastPhotoFunc() {
-        rightImage.removeFromSuperview()
+        stackView.removeFromSuperview()
+       lastImageView.hidden = false
         removeGestures()
         let photoIndex = photoList.sortedListOfPhotoIndices(.keepers)[0]
         let photoKey = photoList.keepers[photoIndex]!
-        setImg(leftImage, photoKey: photoKey)
+        setImg(lastImageView, photoKey: photoKey)
         NSNotificationCenter.defaultCenter().postNotificationName(newKeepersNotification, object: self)
-        print("i know this is the last photo ~landscape")
     }
     
     
@@ -94,7 +94,24 @@ class LandscapeViewController: UIViewController {
                 imageView.image = imageForPhoto
         }
     }
-
+    
+    func swipeAndSetPhoto(imageView: UIImageView, direction: Swipe.direction) {
+        var nextPhotoKey : PhotoKey?
+        if imageView == leftImage {
+            nextPhotoKey = swipe.getNextPhotoKey(leftPhotoKey!, direction: direction)
+            nextPhotoKey = swipe.differentPhoto(nextPhotoKey!, otherPhotoKey: rightPhotoKey!, direction: direction)
+        }
+        if imageView == rightImage {
+            nextPhotoKey = swipe.getNextPhotoKey(rightPhotoKey!, direction: direction)
+            nextPhotoKey = swipe.differentPhoto(nextPhotoKey!, otherPhotoKey: leftPhotoKey!, direction: direction)
+        }
+        setImg(imageView, photoKey: nextPhotoKey!)
+    }
+    
+    
+    
+    
+//MARK: - IBAction
 
     @IBAction func rightSwipeUp(sender: UISwipeGestureRecognizer) {
         let nextPhotoKey = swipe.swipeUpDelete(rightImage, currentPhotoKey: rightPhotoKey!)
@@ -108,8 +125,6 @@ class LandscapeViewController: UIViewController {
         }
     }
     
-  //  COULD PROBABLY REWRITE ALL OF THESE INTO A FUNCTION :P
-    
     @IBAction func leftSwipeUp (sender: UISwipeGestureRecognizer) {
         let nextPhotoKey = swipe.swipeUpDelete(leftImage, currentPhotoKey: leftPhotoKey!)
         if photoList.keepers.count == 1 {
@@ -121,23 +136,6 @@ class LandscapeViewController: UIViewController {
             }
         }
     }
-    
-    
-
-    
-    func swipeAndSetPhoto(imageView: UIImageView, direction: Swipe.direction) {
-        var nextPhotoKey : PhotoKey?
-        if imageView == leftImage {
-             nextPhotoKey = swipe.getNextPhotoKey(leftPhotoKey!, direction: direction)
-             nextPhotoKey = swipe.differentPhoto(nextPhotoKey!, otherPhotoKey: rightPhotoKey!, direction: direction)
-        }
-        if imageView == rightImage {
-             nextPhotoKey = swipe.getNextPhotoKey(rightPhotoKey!, direction: direction)
-             nextPhotoKey = swipe.differentPhoto(nextPhotoKey!, otherPhotoKey: leftPhotoKey!, direction: direction)
-        }
-        setImg(imageView, photoKey: nextPhotoKey!)
-    }
-    
     
     @IBAction func swipeRonL(sender: AnyObject) {
         swipeAndSetPhoto(leftImage, direction: .right)
@@ -154,35 +152,12 @@ class LandscapeViewController: UIViewController {
         swipeAndSetPhoto(rightImage, direction: .left)
     }
     
-    /*
     
-    func application(application: UIApplication, supportedInterfaceOrientationsForWindow window: UIWindow?) -> UIInterfaceOrientationMask {
-        
-        if self.window?.rootViewController?.presentedViewController is SecondViewController {
-            
-            let secondController = self.window!.rootViewController.presentedViewController as! LandscapeViewController
-            
-            if secondController.isPresented {
-                return UIInterfaceOrientationMask.All.rawValue
-            } else {
-                return UIInterfaceOrientationMask.Portrait.rawValue
-            }
-        } else {
-            return UIInterfaceOrientationMask.Portrait.rawValue
-        }
-        
-    }
-    */
-
     
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+    
+    
+    
+ //end
 }
+
+

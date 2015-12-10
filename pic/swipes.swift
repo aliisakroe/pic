@@ -117,7 +117,7 @@ class Swipe {
     
     func makePhotoKeyFromPHAsset(asset: PHAsset) -> PhotoKey {
         let indexForPhoto = photoList.keepers.count + 1
-        let photo = PhotoKey(index: indexForPhoto, image: nil, asset: asset)
+        let photo = PhotoKey(index: indexForPhoto, url: nil, asset: asset)
         return photo
     }
     
