@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Photos
 
 class ScrollViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
 
@@ -23,7 +24,9 @@ class ScrollViewController: UIViewController, UICollectionViewDataSource, UIColl
     }
     
     func reloadCollectionView(){
-        collectionView.reloadData()
+        print("reloadCollectionView")
+        dispatch_async(dispatch_get_main_queue(), { self.collectionView.reloadData() })
+
     }
     
     override func didReceiveMemoryWarning() {
@@ -42,16 +45,24 @@ class ScrollViewController: UIViewController, UICollectionViewDataSource, UIColl
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("scrollImage", forIndexPath: indexPath) as! CollectionViewCell
         dispatch_async(dispatch_get_main_queue(), {
-            let allPhotos = Array(self.photoList.getTotalImages(.keepers).values)
-            cell.imageForScroll!.image = allPhotos[indexPath.row]
+            let manager = PHImageManager.defaultManager()
+            let photoIndex =  self.photoList.sortedListOfPhotoIndices(.keepers)[indexPath.row]
+            var photoKey = self.photoList.keepers[photoIndex]!
+            manager.requestImageForAsset(photoKey.asset,
+                targetSize: CGSizeMake(4000.0, 4000.0),
+                contentMode: .AspectFill ,
+                options: nil) { (result, _) in
+                    cell.imageForScroll!.image = result!
+            }
         })
         return cell
     }
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        let cellImage = Array(photoList.getTotalImages(.keepers).values)[indexPath.row]
-        if (delegate != nil) {
-            delegate!.scrollViewSelection(self, image: cellImage)
+        let photoIndex =  self.photoList.sortedListOfPhotoIndices(.keepers)[indexPath.row]
+        var photoKey = self.photoList.allPhotoList[photoIndex]!
+        if (self.delegate != nil) {
+            self.delegate!.scrollViewSelection(self, selectedPhotoKey: photoKey)
         }
     }
     

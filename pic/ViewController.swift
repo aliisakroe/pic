@@ -10,12 +10,10 @@ import UIKit
 import BSImagePicker
 import Photos
 import Social
-//import Cocoa
-//import NSImage
-
+import FBSDKCoreKit
+import FBSDKLoginKit
 
 /** to do
-- resize photos
 - app icon
 - app loadscreen
 -final image, then restore one from discards to keepers...
@@ -24,7 +22,6 @@ import Social
 */
 /* ask
 - error mesage for collection view
-- resize images***
 - singleton okay?
 */
 
@@ -35,14 +32,14 @@ let lastPhoto = "final steps"
 let finalPhoto = "final photo"
 
 protocol ScrollViewControllerDelegate {
-    func scrollViewSelection(controller:ScrollViewController, image: UIImage)
+    func scrollViewSelection(controller:ScrollViewController, selectedPhotoKey: PhotoKey)
 }
 
 protocol DiscardsViewControllerDelegate {
-    func restoreImagesToKeepers(imageArray: [UIImage])
+    func restoreImagesToKeepers(photoKeyArray: [PhotoKey])
 }
 
-class ViewController: UIViewController, UIDocumentInteractionControllerDelegate, ScrollViewControllerDelegate, DiscardsViewControllerDelegate  {
+class ViewController: UIViewController, UIDocumentInteractionControllerDelegate, ScrollViewControllerDelegate, DiscardsViewControllerDelegate, FBSDKLoginButtonDelegate {
     
     
     var photoList = PhotoList.sharedInstance
@@ -52,6 +49,7 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
     var swipe = Swipe()
     let effectView = UIVisualEffectView(effect: UIBlurEffect(style: UIBlurEffectStyle.Light))
     let secondPhoto = UIImageView()
+    var currentImgMainPhotoKey : PhotoKey?
     
     @IBOutlet weak var doubleCheckButton: UIButton!
     @IBOutlet weak var imgMain: UIImageView!
@@ -98,14 +96,9 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
 //    resize                   let resizedImg = self.swipe.resizeImage(imageArray[0], targetSize: self.imgMain.frame.size)
                         
                         let manager = PHImageManager.defaultManager()
-                        var firstAsset = Array(self.photoList.keepers.values)[0].asset
-                        manager.requestImageForAsset(firstAsset,
-                            targetSize: CGSizeMake(4000.0, 4000.0),
-                            contentMode: .AspectFill ,
-                            options: nil) { (result, _) in
-                                var imageForPhoto = result!
-                                self.imgMain.image = imageForPhoto
-                        }
+                        var firstPhotoKey = Array(self.photoList.keepers.values)[0]
+                        self.currentImgMainPhotoKey = firstPhotoKey
+                        self.setImg(self.imgMain, asset: firstPhotoKey.asset)
                         self.imgMain.hidden = false
                         // tells the scroll view to reload data
                         NSNotificationCenter.defaultCenter().postNotificationName(newKeepersNotification, object: self)
@@ -115,24 +108,28 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
     }
     
     
-    func setImg(imageView: UIImageView) {
-        let manager = PHImageManager.defaultManager()
-        var firstAsset = Array(self.photoList.keepers.values)[0].asset
-        manager.requestImageForAsset(firstAsset,
-            targetSize: CGSizeMake(4000.0, 4000.0),
-            contentMode: .AspectFill ,
-            options: nil) { (result, _) in
-                var imageForPhoto = result!
-                imageView.image = imageForPhoto
-        }
-    }
-    
-    
     // MARK: - functions
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if FBSDKAccessToken.currentAccessToken() == nil {
+            print("Not logged in...")
+        } else {
+            print("Logged in!")
+        }
+        
+        var logInButton = FBSDKLoginButton()
+        logInButton.readPermissions = ["public_profile", "email", "user_friends"]
+        logInButton.center = self.view.center
+        logInButton.delegate = self
+        
+       // self.view.addSubview(logInButton)
+        
+        
+        
+        
         self.navigationController!.navigationBar.hidden = true
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "checkImgMain", name: newKeepersNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "rotated", name: UIDeviceOrientationDidChangeNotification, object: nil)
@@ -176,35 +173,57 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
     }
     
     func checkImgMain() {
-        if swipe.photoIsIn(imgMain.image!) == .discards {
-            let nextPhoto = photoList.getTotalImages(.keepers)[0]
-            imgMain.image = nextPhoto
+        var currentPhotoKey = self.currentImgMainPhotoKey!
+        if swipe.photoIsIn(currentPhotoKey) == .discards {
+            print("i will never let go")
+            let index = photoList.sortedListOfPhotoIndices(.keepers)[0]
+            let photoKey =  photoList.keepers[index]
+            setImg(imgMain, asset: photoKey!.asset)
+            print("SET FROM CHECKIMGMAIN NEW KEEPERS NOTIFICATION")
         }
     }
 
     //from scrollViewDelegate!!!
     
-    func scrollViewSelection(controller: ScrollViewController, image: UIImage) {
-        imgMain.image! = image
+    func scrollViewSelection(controller: ScrollViewController, selectedPhotoKey: PhotoKey) {
+        self.setImg(imgMain, asset: selectedPhotoKey.asset)
     }
     
-    func restoreImagesToKeepers(imageArray: [UIImage]){
-        for image in imageArray{
-            var thePhotoKey = swipe.imageToPhotoKey(image)
+    func restoreImagesToKeepers(photoKeyArray: [PhotoKey]){
+        for thePhotoKey in photoKeyArray{
             photoList.keepPhoto(thePhotoKey, list: .keepers)
             NSNotificationCenter.defaultCenter().postNotificationName(newKeepersNotification, object: self)
+            self.scrollViewController.hidden = false
+            shareButtonOutlet.hidden = true
+            imgMain.addGestureRecognizer(swipeUpMain)
         }
     }
     
     func lastPhotoView() {
         print("lastPhotoView()")
         self.scrollViewController.hidden = true
-        imgMain.image = Array(photoList.keepers.values)[0].image
+        let index = photoList.sortedListOfPhotoIndices(.keepers)[0]
+        let lastPhotoKey = photoList.keepers[index]
+        setImg(imgMain, asset: lastPhotoKey!.asset) //sets first here
+        
         imgMain.removeGestureRecognizer(swipeUpMain)
         shareButtonOutlet.hidden = false
     }
     
+    //MARK: - Facebook Login
     
+    func loginButton(loginButton: FBSDKLoginButton!, didCompleteWithResult result: FBSDKLoginManagerLoginResult!, error: NSError!) {
+        if error ==  nil {
+            print("Login complete.")
+            self.picButton.enabled = true
+        } else {
+            print(error.localizedDescription)
+        }
+    }
+    
+    func loginButtonDidLogOut(loginButton: FBSDKLoginButton!) {
+        print("user logged out")
+    }
     
     
     
@@ -312,21 +331,39 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
                 var imageForPhoto = result!
                 imageView.image = imageForPhoto
         }
+        if imageView == imgMain {
+            self.currentImgMainPhotoKey = swipe.findPhotoKeyForAsset(asset)
+        }
     }
     
     func swipeAndSetPhoto(imageView: UIImageView, direction: Swipe.direction) {
-        let currentPhotoKey = swipe.imageToPhotoKey(imageView.image!)
-        var nextPhotoKey = swipe.getNextPhotoKey(currentPhotoKey, direction: direction)
+        print("swipe and set photo()")
+        var nextPhotoKey = swipe.getNextPhotoKey(self.currentImgMainPhotoKey!, direction: direction)
         setImg(imageView, asset: nextPhotoKey.asset)
     }
     
+    func resizeImage(image: UIImage, newWidth: CGFloat) -> UIImage {
+        
+        let scale = newWidth / image.size.width
+        let newHeight = image.size.height * scale
+        UIGraphicsBeginImageContext(CGSizeMake(newWidth, newHeight))
+        image.drawInRect(CGRectMake(0, 0, newWidth, newHeight))
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return newImage
+    }
+    
     @IBAction func swipeUpMain(sender: AnyObject) {
-        let newPhotoKey = swipe.swipeUpDelete(imgMain)
-        setImg(imgMain, asset: newPhotoKey.asset)
+        print("swipe up main")
+        let newPhotoKey = swipe.swipeUpDelete(imgMain, currentPhotoKey: self.currentImgMainPhotoKey!)
+        print(swipe.photoIsIn(self.currentImgMainPhotoKey!))
+        print(swipe.isSameAsset(newPhotoKey.asset, asset2: self.currentImgMainPhotoKey!.asset))
         if photoList.keepers.count == 1 {
             NSNotificationCenter.defaultCenter().postNotificationName(lastPhoto, object: self)
+        } else {
+            NSNotificationCenter.defaultCenter().postNotificationName(newKeepersNotification, object: self)
         }
-        NSNotificationCenter.defaultCenter().postNotificationName(newKeepersNotification, object: self)
     }
 
     @IBAction func mainSwipeLeft(sender: UISwipeGestureRecognizer) {

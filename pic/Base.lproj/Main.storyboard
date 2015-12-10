@@ -48,9 +48,6 @@
                                                 <imageView multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="mJS-Ec-mQj">
                                                     <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                                     <animations/>
-                                                    <variation key="widthClass=compact" misplaced="YES">
-                                                        <rect key="frame" x="9" y="9" width="107" height="107"/>
-                                                    </variation>
                                                 </imageView>
                                                 <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ios8_check_icon" translatesAutoresizingMaskIntoConstraints="NO" id="Gh2-Bp-P5s">
                                                     <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
@@ -104,6 +101,8 @@
                                                 <exclude reference="Gh2-Bp-P5s"/>
                                             </mask>
                                             <mask key="constraints">
+                                                <exclude reference="MXg-18-9Fa"/>
+                                                <exclude reference="vH8-Ji-B1M"/>
                                                 <exclude reference="0xH-MW-NoM"/>
                                                 <exclude reference="6Tq-bx-tbA"/>
                                                 <exclude reference="Osj-v2-01i"/>
@@ -112,8 +111,6 @@
                                                 <exclude reference="bzp-TP-pja"/>
                                                 <exclude reference="rIx-hg-d7a"/>
                                                 <exclude reference="sks-aO-G2O"/>
-                                                <exclude reference="MXg-18-9Fa"/>
-                                                <exclude reference="vH8-Ji-B1M"/>
                                             </mask>
                                         </variation>
                                         <variation key="widthClass=compact">
@@ -122,6 +119,8 @@
                                                 <include reference="Gh2-Bp-P5s"/>
                                             </mask>
                                             <mask key="constraints">
+                                                <include reference="MXg-18-9Fa"/>
+                                                <include reference="vH8-Ji-B1M"/>
                                                 <exclude reference="0xH-MW-NoM"/>
                                                 <include reference="6Tq-bx-tbA"/>
                                                 <include reference="Osj-v2-01i"/>
@@ -130,8 +129,6 @@
                                                 <include reference="bzp-TP-pja"/>
                                                 <exclude reference="rIx-hg-d7a"/>
                                                 <exclude reference="sks-aO-G2O"/>
-                                                <include reference="MXg-18-9Fa"/>
-                                                <include reference="vH8-Ji-B1M"/>
                                             </mask>
                                         </variation>
                                         <connections>
@@ -167,10 +164,10 @@
                                 <exclude reference="OVV-LP-X2L"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="mgJ-kX-OdZ"/>
                                 <exclude reference="KyP-Th-YYW"/>
                                 <exclude reference="gSD-X2-ZYI"/>
                                 <exclude reference="rzQ-AQ-aXB"/>
+                                <exclude reference="mgJ-kX-OdZ"/>
                                 <exclude reference="0Mr-1C-ck3"/>
                                 <exclude reference="9v8-Mo-3q1"/>
                                 <exclude reference="A8Z-LO-ayc"/>
@@ -183,25 +180,28 @@
                                 <include reference="OVV-LP-X2L"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="mgJ-kX-OdZ"/>
                                 <include reference="KyP-Th-YYW"/>
                                 <exclude reference="gSD-X2-ZYI"/>
                                 <include reference="rzQ-AQ-aXB"/>
+                                <include reference="mgJ-kX-OdZ"/>
                                 <include reference="0Mr-1C-ck3"/>
                                 <include reference="9v8-Mo-3q1"/>
                                 <include reference="A8Z-LO-ayc"/>
                                 <exclude reference="df6-jy-t9C"/>
                             </mask>
                         </variation>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="ver-Ff-CAQ" appends="YES" id="UkA-2j-stD"/>
+                        </connections>
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" title="Discarded Items" id="jir-eI-Egd">
-                        <barButtonItem key="leftBarButtonItem" systemItem="reply" id="lna-C9-WlK">
+                        <barButtonItem key="leftBarButtonItem" enabled="NO" systemItem="reply" id="lna-C9-WlK">
                             <connections>
                                 <action selector="backUndo:" destination="cFT-BS-Op0" id="atR-T8-cMP"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="trash" id="uMQ-fQ-wcl">
+                        <barButtonItem key="rightBarButtonItem" enabled="NO" systemItem="trash" id="uMQ-fQ-wcl">
                             <connections>
                                 <action selector="trash:" destination="cFT-BS-Op0" id="qkz-DB-8Rp"/>
                             </connections>
@@ -211,9 +211,17 @@
                     <connections>
                         <outlet property="collectionView" destination="OVV-LP-X2L" id="OH5-jo-WPE"/>
                         <outlet property="label" destination="5Jt-xw-pKd" id="nfc-jb-tvV"/>
+                        <outlet property="trashButton" destination="uMQ-fQ-wcl" id="QTF-g4-tAH"/>
+                        <outlet property="undoButton" destination="lna-C9-WlK" id="VgK-FS-kvF"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wbr-hJ-gTH" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <screenEdgePanGestureRecognizer minimumNumberOfTouches="1" id="ver-Ff-CAQ">
+                    <rectEdge key="edges" left="YES"/>
+                    <connections>
+                        <action selector="swipeBack:" destination="cFT-BS-Op0" id="IgG-Rq-iGz"/>
+                    </connections>
+                </screenEdgePanGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="966" y="-803"/>
         </scene>
@@ -447,7 +455,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eL4-bm-RIn" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <swipeGestureRecognizer direction="up" id="kl1-mV-3yd">
                     <connections>
-                        <action selector="rightSwipeUp:" destination="xPH-qe-cOf" id="gjZ-g4-Tmw"/>
+                        <action selector="rightSwipeUp:" destination="xPH-qe-cOf" id="Q8m-9F-yJv"/>
                     </connections>
                 </swipeGestureRecognizer>
                 <swipeGestureRecognizer direction="up" id="ufW-8F-M7T">

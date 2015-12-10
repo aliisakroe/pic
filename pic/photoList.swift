@@ -45,6 +45,7 @@ class PhotoList {
         }
         if list == .discards {
             self.keepers[photo.index] = nil
+            discards[photo.index] = photo
         }
     }
     
@@ -66,23 +67,23 @@ class PhotoList {
     }
 
 
-    func getTotalImages(list: PhotoList.list) -> [Int : UIImage] {
-        var imageDict = [Int: UIImage]()
-        if list == .discards {
-            for i in 0 ..< self.discards.count {
-                let photo = Array(self.discards.values)[i].image
-                imageDict[i] = photo
-            }
-        } else if list == .keepers {
-            for i in 0 ..< self.keepers.count {
-                let photo = Array(self.keepers.values)[i].image
-                imageDict[i] = photo
-            }
-        }
-
-        return imageDict
-    }
-    
+//    func getTotalImages(list: PhotoList.list) -> [Int : UIImage] {
+//        var imageDict = [Int: UIImage]()
+//        if list == .discards {
+//            for i in 0 ..< self.discards.count {
+//                let photo = Array(self.discards.values)[i].image
+//                imageDict[i] = photo
+//            }
+//        } else if list == .keepers {
+//            for i in 0 ..< self.keepers.count {
+//                let photo = Array(self.keepers.values)[i].image
+//                imageDict[i] = photo
+//            }
+//        }
+//
+//        return imageDict
+//    }
+//    
     
     //end
 }

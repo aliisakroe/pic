@@ -16,11 +16,13 @@ class DiscardsVC: UIViewController, UICollectionViewDataSource, UICollectionView
     
     @IBOutlet weak var label: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var undoButton: UIBarButtonItem!
+    @IBOutlet weak var trashButton: UIBarButtonItem!
 
     
     var photoList = PhotoList.sharedInstance
     var delegate: ViewController? = nil
-    var selectedImages = [UIImage]()
+    var selectedImages = [PhotoKey]()
     
     
     override func viewDidLoad() {
@@ -50,30 +52,51 @@ class DiscardsVC: UIViewController, UICollectionViewDataSource, UICollectionView
      func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(reuseIdentifier, forIndexPath: indexPath) as! CollectionViewCell 
         dispatch_async(dispatch_get_main_queue(), {
-        let allPhotos = Array(self.photoList.getTotalImages(.discards).values)
-        cell.image!.image = allPhotos[indexPath.row]
+            let photoIndex = self.photoList.sortedListOfPhotoIndices(.discards)[indexPath.row]
+            let photoKey = self.photoList.discards[photoIndex]!
+            let manager = PHImageManager.defaultManager()
+            
+                manager.requestImageForAsset(photoKey.asset,
+                targetSize: CGSizeMake(4000.0, 4000.0),
+                contentMode: .AspectFill ,
+                options: nil) { (result, _) in
+                    cell.image!.image = result!
+            }
+            })
         cell.hidden = false
         cell.image.hidden = false
-        })
         return cell
     }
     
-    func deleteImage(element: UIImage) {
-        selectedImages = selectedImages.filter() { $0 !== element }
-    }
+
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath){
         let selectedCell = self.collectionView.cellForItemAtIndexPath(indexPath) as! CollectionViewCell
         selectedCell.checkIcon.hidden = false
-        let cellImage = Array(photoList.getTotalImages(.discards).values)[indexPath.row]
-        self.selectedImages.append(cellImage)
+        let photoIndex =  self.photoList.sortedListOfPhotoIndices(.discards)[indexPath.row]
+        let thePhotoKey = self.photoList.discards[photoIndex]
+        self.selectedImages.append(thePhotoKey!)
+        if selectedImages.count != 0 {
+            trashButton.enabled = true
+            undoButton.enabled = true
+            
+        }
     }
     
     func collectionView(collectionView: UICollectionView, didDeselectItemAtIndexPath indexPath: NSIndexPath){
         let selectedCell = self.collectionView.cellForItemAtIndexPath(indexPath) as! CollectionViewCell
         selectedCell.checkIcon.hidden = true
-        let cellImage = Array(photoList.getTotalImages(.discards).values)[indexPath.row]
-        deleteImage(cellImage)
+        let photoIndex =  self.photoList.sortedListOfPhotoIndices(.discards)[indexPath.row]
+        let thePhotoKey = self.photoList.keepers[photoIndex]
+        for i in 0 ..< selectedImages.count {
+            if selectedImages[i].index == photoIndex {                                      //BUGGY dispatch????
+                selectedImages.removeAtIndex(i)
+            }
+        }
+        if selectedImages.count == 0 {
+            trashButton.enabled = false
+            undoButton.enabled = false
+        }
     }
     
     @IBAction func backUndo(sender: AnyObject) {
@@ -92,17 +115,15 @@ class DiscardsVC: UIViewController, UICollectionViewDataSource, UICollectionView
     func deleteFromPhone() {
        var assetsToDelete = [PHAsset]()
         var photoKeyArray = [PhotoKey]()
-        let swipe = Swipe()
             PHPhotoLibrary.sharedPhotoLibrary().performChanges( {
-                for image in self.selectedImages{
-                    let thePhotoKey = swipe.imageToPhotoKey(image)
+                for thePhotoKey in self.selectedImages{
                     assetsToDelete.append(thePhotoKey.asset)
                     photoKeyArray.append(thePhotoKey)
                 }
                 PHAssetChangeRequest.deleteAssets(assetsToDelete)
                 },
                 completionHandler: { success, error in
-                    NSLog("Finished deleting asset. %@", (success ? "Success" : error!))
+                    NSLog("Finished deleting asset. %@",  (success ? "Success" : error!))
                     if success {
                         for thePhotoKey in photoKeyArray{
                             self.photoList.deletePhoto(thePhotoKey)
@@ -112,4 +133,7 @@ class DiscardsVC: UIViewController, UICollectionViewDataSource, UICollectionView
             })
     }
     
+    @IBAction func swipeBack(sender: AnyObject) {
+        navigationController?.popViewControllerAnimated(true)
+    }
 }

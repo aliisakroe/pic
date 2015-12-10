@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		12D41E014C8BC134783DF792 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89B64A93EB54792F24015556 /* Pods.framework */; };
+		6457DE321C194D2200614692 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6457DE311C194D2200614692 /* FBSDKLoginKit.framework */; };
+		6457DE341C194D3600614692 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6457DE331C194D3600614692 /* FBSDKShareKit.framework */; };
+		6457DE361C194D5B00614692 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6457DE351C194D5B00614692 /* FBSDKCoreKit.framework */; };
 		647587E51C14B779001B2714 /* LandscapeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647587E41C14B779001B2714 /* LandscapeViewController.swift */; };
 		647587E91C153456001B2714 /* swipes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647587E81C153456001B2714 /* swipes.swift */; };
 		647587ED1C155C40001B2714 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647587EC1C155C40001B2714 /* NavigationController.swift */; };
@@ -49,6 +52,9 @@
 /* Begin PBXFileReference section */
 		192CA49B8623B16EDD8BD555 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		38B23F5C1EDA812B633BDEB6 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		6457DE311C194D2200614692 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKLoginKit.framework; sourceTree = "<group>"; };
+		6457DE331C194D3600614692 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
+		6457DE351C194D5B00614692 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		647587E41C14B779001B2714 /* LandscapeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LandscapeViewController.swift; sourceTree = "<group>"; };
 		647587E81C153456001B2714 /* swipes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = swipes.swift; sourceTree = "<group>"; };
 		647587EC1C155C40001B2714 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
@@ -83,6 +89,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				64A6282C1C1104830050F222 /* Social.framework in Frameworks */,
+				6457DE361C194D5B00614692 /* FBSDKCoreKit.framework in Frameworks */,
+				6457DE341C194D3600614692 /* FBSDKShareKit.framework in Frameworks */,
+				6457DE321C194D2200614692 /* FBSDKLoginKit.framework in Frameworks */,
 				6483224A1C0BDC230069C487 /* Photos.framework in Frameworks */,
 				12D41E014C8BC134783DF792 /* Pods.framework in Frameworks */,
 			);
@@ -129,10 +138,11 @@
 			isa = PBXGroup;
 			children = (
 				647587EC1C155C40001B2714 /* NavigationController.swift */,
-				64C7B5431C1205D70079052E /* DiscardsVC.swift */,
-				64C7B54A1C1363C50079052E /* ScrollViewController.swift */,
 				64CF3C571C0B873800CD1D57 /* ViewController.swift */,
+				64C7B54A1C1363C50079052E /* ScrollViewController.swift */,
 				647587E41C14B779001B2714 /* LandscapeViewController.swift */,
+				64C7B5431C1205D70079052E /* DiscardsVC.swift */,
+				64CF3C5C1C0B873800CD1D57 /* Assets.xcassets */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -166,7 +176,6 @@
 				64C7B5451C12B17C0079052E /* Model */,
 				64C7B5461C133B9D0079052E /* View */,
 				64C7B5471C133BC90079052E /* Controller */,
-				64CF3C5C1C0B873800CD1D57 /* Assets.xcassets */,
 				64C87B601C17ABBC001FFB26 /* ios8_check_icon.png */,
 				64CF3C5E1C0B873800CD1D57 /* LaunchScreen.storyboard */,
 				64CF3C611C0B873800CD1D57 /* Info.plist */,
@@ -195,6 +204,9 @@
 		D5D1B0DE332FB1417574E379 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6457DE351C194D5B00614692 /* FBSDKCoreKit.framework */,
+				6457DE331C194D3600614692 /* FBSDKShareKit.framework */,
+				6457DE311C194D2200614692 /* FBSDKLoginKit.framework */,
 				64A6282B1C1104830050F222 /* Social.framework */,
 				648322491C0BDC230069C487 /* Photos.framework */,
 				89B64A93EB54792F24015556 /* Pods.framework */,
@@ -548,6 +560,10 @@
 			baseConfigurationReference = 192CA49B8623B16EDD8BD555 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = pic/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = personal.pic;
@@ -560,6 +576,10 @@
 			baseConfigurationReference = 38B23F5C1EDA812B633BDEB6 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = pic/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = personal.pic;
