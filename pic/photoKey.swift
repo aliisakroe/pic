@@ -11,7 +11,6 @@ import Photos
 
 struct PhotoKey {
     var index : Int
-    var url : NSURL?
     var asset : PHAsset
 }
 

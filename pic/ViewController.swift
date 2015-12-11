@@ -37,7 +37,6 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
     
     
     var photoList = PhotoList.sharedInstance
-    var vc = BSImagePickerViewController()
     var selectedPhotos : [PHAsset] = []
     var previousMainImage : UIImage?
     var swipe = Swipe()
@@ -68,6 +67,7 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
 
             selectedPhotos = [PHAsset]()
             let _ = BSImagePickerViewController()
+            var vc = BSImagePickerViewController()
             
             bs_presentImagePickerController(vc, animated: true,
                 select: { (asset: PHAsset) -> Void in
@@ -117,17 +117,18 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
     
     override func viewDidLoad() {
         super.viewDidLoad()
+       
         
-        logInButton.readPermissions = ["public_profile", "email", "user_friends"]
-        logInButton.center = self.view.center
-        logInButton.delegate = self
-        
-        if FBSDKAccessToken.currentAccessToken() == nil {
-            print("Not logged in...")
-            //self.view.addSubview(logInButton)
-        } else {
-            print("Logged in!")
-        }
+//        logInButton.readPermissions = ["public_profile", "email", "user_friends"]
+//        logInButton.center = self.view.center
+//        logInButton.delegate = self
+//        
+//        if FBSDKAccessToken.currentAccessToken() == nil {
+//            print("Not logged in...")
+//            //self.view.addSubview(logInButton)
+//        } else {
+//            print("Logged in!")
+//        }
         
         self.navigationController!.navigationBar.hidden = true
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "checkImgMain", name: newKeepersNotification, object: nil)
@@ -213,7 +214,7 @@ class ViewController: UIViewController, UIDocumentInteractionControllerDelegate,
     
     //called from lastPhoto notification, adds share button and removes collection view
     func lastPhotoView() {
-       // picAgainButton.hidden = false
+        picAgainButton.hidden = false
         self.scrollViewController.hidden = true
         self.shareButtonOutlet.hidden = false
         let index = photoList.sortedListOfPhotoIndices(.keepers)[0]

@@ -20,8 +20,6 @@ class Swipe {
     }
     
     func swipeUpDelete(imageView: UIImageView, currentPhotoKey: PhotoKey) -> PhotoKey {
-        print(photoList.keepers.count)
-        print("SWIPE UP DELETE")
         var nextPhotoKey : PhotoKey? = nil
         if photoList.keepers.count == 2 {
             nextPhotoKey = currentPhotoKey
@@ -35,7 +33,6 @@ class Swipe {
     func getNextPhotoKey(currentPhotoKey: PhotoKey, direction: Swipe.direction) -> PhotoKey {
         var nextIndex : Int?
         let sortedKeepers = photoList.sortedListOfPhotoIndices(.keepers)
-        print(sortedKeepers)
             for i in 0 ..< sortedKeepers.count  {
                 if sortedKeepers[i] == currentPhotoKey.index {
                     if direction == .left {
@@ -64,7 +61,6 @@ class Swipe {
     }
     
     func isSamePhoto(img1: UIImage, img2: UIImage) -> Bool {
-        print("is same photo")
         var isSame = false
         if UIImagePNGRepresentation(img1)!.isEqual(UIImagePNGRepresentation(img2)!) {
             isSame = true
@@ -74,7 +70,6 @@ class Swipe {
     }
     
     func differentPhoto(nextPhotoKey: PhotoKey, otherPhotoKey: PhotoKey, direction: Swipe.direction) -> PhotoKey? {
-        print("different photo")
         if photoList.keepers.count != 1 {
         if isSameAsset(nextPhotoKey.asset, asset2: otherPhotoKey.asset) {
             return getNextPhotoKey(nextPhotoKey, direction: direction)
@@ -117,15 +112,12 @@ class Swipe {
     
     func makePhotoKeyFromPHAsset(asset: PHAsset) -> PhotoKey {
         let indexForPhoto = photoList.keepers.count + 1
-        let photo = PhotoKey(index: indexForPhoto, url: nil, asset: asset)
+        let photo = PhotoKey(index: indexForPhoto, asset: asset)
         return photo
     }
     
     func imageToPhotoKey(image: UIImage) -> PhotoKey {
-        print("imageTOPhotoKey")
         var thePhotoKey : PhotoKey?
-        print(photoList.allPhotoList.count)
-       
         for photo in photoList.allPhotoList.values {
             let manager = PHImageManager.defaultManager()
             let asset = photo.asset
@@ -134,9 +126,7 @@ class Swipe {
             contentMode: .AspectFill ,
             options: nil) { (result, _) in
                 let imageForPhoto = result!
-                print(image)
-                print(imageForPhoto)
-                if self.isSamePhoto(image, img2: imageForPhoto) {           //not comparing imgMain
+                if self.isSamePhoto(image, img2: imageForPhoto) {
                     thePhotoKey = photo
                 }
             }

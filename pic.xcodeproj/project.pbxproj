@@ -76,6 +76,7 @@
 		64CF3C711C0B873900CD1D57 /* picUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = picUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		64CF3C751C0B873900CD1D57 /* picUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = picUITests.swift; sourceTree = "<group>"; };
 		64CF3C771C0B873900CD1D57 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		64D28E7F1C1A4B540027424E /* Amplify_PersonalUseOnly.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Amplify_PersonalUseOnly.ttf; sourceTree = "<group>"; };
 		89B64A93EB54792F24015556 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -138,6 +139,7 @@
 				647587E41C14B779001B2714 /* LandscapeViewController.swift */,
 				64C7B5431C1205D70079052E /* DiscardsVC.swift */,
 				64CF3C5C1C0B873800CD1D57 /* Assets.xcassets */,
+				64D28E7F1C1A4B540027424E /* Amplify_PersonalUseOnly.ttf */,
 			);
 			name = Controller;
 			sourceTree = "<group>";

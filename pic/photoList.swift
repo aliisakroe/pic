@@ -50,9 +50,7 @@ class PhotoList {
     }
     
     func clearPhotos(){
-//        for photoKey in allPhotoList {
-//            photoKey.asset = nil
-//        }
+        //how to delete photokeys??
         self.keepers = [:]
         self.discards = [:]
     }
