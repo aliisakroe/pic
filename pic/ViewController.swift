@@ -6,8 +6,6 @@
 //  Copyright © 2015 Aliisa Roe. All rights reserved.
 //
 
-//This is the main() file, where other viewcontrollers are segued from. This controls the phone while in portrait mode. 
-//When in landscape mode, see LandscapeViewController.swift and when looking at discarded photos, see DiscardsVC.swift.
 
 import UIKit
 import BSImagePicker
