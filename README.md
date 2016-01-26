@@ -21,7 +21,7 @@ Deleted photos can be deleted from the users photo library. To do so, select pho
 
 When the user has narrowed down to the final photo the user can share the photo to Facebook, Twitter, mail or messenger. 
 
-![alt tag](http://url/to/video.mov)
+![alt tag](https://raw.github.com/username/projectname/branch/path/to/video.mov)
 
 Enjoy!
 
