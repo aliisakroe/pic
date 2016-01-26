@@ -21,6 +21,8 @@ Deleted photos can be deleted from the users photo library. To do so, select pho
 
 When the user has narrowed down to the final photo the user can share the photo to Facebook, Twitter, mail or messenger. 
 
+Code can be seen in pic/ folder, and selected files: ViewController.swift, VcrollViewController.swift, LandscapeViewController.swift, DiscardsVC.swift. Header files are photokey.swift, swipes.swift, photolist.swift.
+
 Video showing working app will go here:
 ![alt tag](https://raw.github.com/username/projectname/branch/path/to/video.mov)
 For now, it can be downloaded from the above files video.mov, if you wish to see the working project.
